@@ -587,6 +587,7 @@ Réia Diamonds
           <div class=&quot;seg&quot; id=&quot;fmt&quot; role=&quot;group&quot; aria-label=&quot;File format&quot;>
             <button data-fmt=&quot;png&quot; aria-pressed=&quot;true&quot;>PNG</button>
             <button data-fmt=&quot;pdf&quot; aria-pressed=&quot;false&quot;>PDF</button>
+            <button data-fmt=&quot;word&quot; aria-pressed=&quot;false&quot;>Word</button>
           </div>
         </div>
         <button type=&quot;button&quot; class=&quot;dlbtn&quot; id=&quot;dlsheet&quot;>⬇ Download comparison</button>
@@ -756,6 +757,13 @@ Réia Diamonds
       const pdf=new jsPDF({orientation: w>=h?&quot;landscape&quot;:&quot;portrait&quot;, unit:&quot;px&quot;, format:[w,h]});
       pdf.addImage(canvas.toDataURL(&quot;image/png&quot;),&quot;PNG&quot;,0,0,w,h);
       pdf.save(base+&quot;.pdf&quot;);
+    }else if(state.fmt===&quot;word&quot;){
+      const dataUrl=canvas.toDataURL(&quot;image/png&quot;);
+      const html='<html xmlns:o=&quot;urn:schemas-microsoft-com:office:office&quot; '+
+        'xmlns:w=&quot;urn:schemas-microsoft-com:office:word&quot; xmlns=&quot;http://www.w3.org/TR/REC-html40&quot;>'+
+        '<head><meta charset=&quot;utf-8&quot;><title>RÉIA Engraving</title></head>'+
+        '<body><img src=&quot;'+dataUrl+'&quot; style=&quot;max-width:100%&quot;/></body></html>';
+      triggerDownload(new Blob(['﻿'+html],{type:&quot;application/msword&quot;}), base+&quot;.doc&quot;);
     }else{
       canvas.toBlob(b=>triggerDownload(b,base+&quot;.png&quot;),&quot;image/png&quot;);
     }
