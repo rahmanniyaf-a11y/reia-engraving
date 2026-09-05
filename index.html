@@ -214,6 +214,18 @@
     padding:3px 8px;border-radius:20px;white-space:nowrap;flex:none;
   }
   .use{font-size:13px;color:var(--ink-soft);margin:0}
+  .actions{display:flex;gap:8px;margin-top:auto;padding-top:4px;flex-wrap:wrap}
+  .btn{
+    font-family:&quot;Jost&quot;,sans-serif;font-size:11px;letter-spacing:.05em;cursor:pointer;
+    border:1px solid var(--gold-soft);background:transparent;color:var(--gold);
+    border-radius:20px;padding:7px 13px;text-decoration:none;
+    display:inline-flex;align-items:center;gap:6px;transition:background .15s,color .15s,border-color .15s;
+  }
+  .btn:hover{border-color:var(--gold)}
+  .btn.primary{background:var(--maroon);border-color:var(--maroon);color:#fff}
+  :root[data-theme=&quot;dark&quot;] .btn.primary,
+  :root:not([data-theme=&quot;light&quot;]) .btn.primary{color:#1b1112}
+  .btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 
   /* sample font faces */
   .f-vibes{font-family:&quot;Great Vibes&quot;,cursive;font-size:46px}
@@ -317,21 +329,21 @@
 
 <script>
   const fonts = [
-    {cls:&quot;f-vibes&quot;,     name:&quot;Great Vibes&quot;,       tag:&quot;Script&quot;,      use:&quot;Romantic flowing calligraphy — a signature choice for names on pendants and outer bands.&quot;},
-    {cls:&quot;f-allura&quot;,    name:&quot;Allura&quot;,            tag:&quot;Fine Script&quot;, use:&quot;Delicate, airy connecting script; elegant for longer names where a light touch is wanted.&quot;},
-    {cls:&quot;f-pinyon&quot;,    name:&quot;Pinyon Script&quot;,     tag:&quot;Formal Script&quot;,use:&quot;Copperplate wedding style — the classic pick for monograms and initials.&quot;},
-    {cls:&quot;f-tangerine&quot;, name:&quot;Tangerine&quot;,         tag:&quot;Swash Script&quot;,use:&quot;Graceful with pretty swashes; lovely on thin bands and slender bracelets.&quot;},
-    {cls:&quot;f-cormorant&quot;, name:&quot;Cormorant Italic&quot;,  tag:&quot;Serif&quot;,       use:&quot;Refined high-contrast serif; premium and timeless for a short quote or name.&quot;},
-    {cls:&quot;f-cinzel&quot;,    name:&quot;Cinzel&quot;,            tag:&quot;Roman Caps&quot;,  use:&quot;Clean inscription capitals — the safest, most legible choice for tiny engravings.&quot;},
-    {cls:&quot;f-playfair&quot;,  name:&quot;Playfair Display&quot;,  tag:&quot;Serif&quot;,       use:&quot;Elegant contrast with a modern edge; balanced for names and initials.&quot;},
-    {cls:&quot;f-josefin&quot;,   name:&quot;Josefin Sans&quot;,      tag:&quot;Modern&quot;,      use:&quot;Geometric and minimal with an art-deco air; unisex and contemporary.&quot;},
-    {cls:&quot;f-cinzeld&quot;,   name:&quot;Cinzel Decorative&quot;, tag:&quot;Ornate Caps&quot;, use:&quot;Heritage engraved capitals with flourish — for crests, logos and statement initials.&quot;},
-    {cls:&quot;f-sacramento&quot;,name:&quot;Sacramento&quot;,        tag:&quot;Monoline&quot;,    use:&quot;Even single-weight stroke — ideal for inside-ring engraving and rotary tools.&quot;},
-    {cls:&quot;f-alexbrush&quot;, name:&quot;Alex Brush&quot;,        tag:&quot;Brush Script&quot;,use:&quot;Expressive brush signature; flowing and confident for names.&quot;},
-    {cls:&quot;f-parisienne&quot;,name:&quot;Parisienne&quot;,        tag:&quot;Casual Script&quot;,use:&quot;Soft, feminine hand — friendly and personal on delicate pieces.&quot;},
-    {cls:&quot;f-marcellus&quot;, name:&quot;Marcellus&quot;,         tag:&quot;Refined Caps&quot;,use:&quot;Understated Roman capitals; quiet luxury for monograms.&quot;},
-    {cls:&quot;f-italiana&quot;,  name:&quot;Italiana&quot;,          tag:&quot;Fashion Serif&quot;,use:&quot;Delicate high-fashion serif; elegant for short words.&quot;},
-    {cls:&quot;f-petit&quot;,     name:&quot;Petit Formal Script&quot;,tag:&quot;Fine Script&quot;,use:&quot;Fine formal script; dainty for dates and small inscriptions.&quot;},
+    {cls:&quot;f-vibes&quot;,     name:&quot;Great Vibes&quot;,       tag:&quot;Script&quot;,      g:&quot;Great+Vibes&quot;,       use:&quot;Romantic flowing calligraphy — a signature choice for names on pendants and outer bands.&quot;},
+    {cls:&quot;f-allura&quot;,    name:&quot;Allura&quot;,            tag:&quot;Fine Script&quot;, g:&quot;Allura&quot;,            use:&quot;Delicate, airy connecting script; elegant for longer names where a light touch is wanted.&quot;},
+    {cls:&quot;f-pinyon&quot;,    name:&quot;Pinyon Script&quot;,     tag:&quot;Formal Script&quot;,g:&quot;Pinyon+Script&quot;,    use:&quot;Copperplate wedding style — the classic pick for monograms and initials.&quot;},
+    {cls:&quot;f-tangerine&quot;, name:&quot;Tangerine&quot;,         tag:&quot;Swash Script&quot;,g:&quot;Tangerine&quot;,         use:&quot;Graceful with pretty swashes; lovely on thin bands and slender bracelets.&quot;},
+    {cls:&quot;f-cormorant&quot;, name:&quot;Cormorant Italic&quot;,  tag:&quot;Serif&quot;,       g:&quot;Cormorant+Garamond&quot;,use:&quot;Refined high-contrast serif; premium and timeless for a short quote or name.&quot;},
+    {cls:&quot;f-cinzel&quot;,    name:&quot;Cinzel&quot;,            tag:&quot;Roman Caps&quot;,  g:&quot;Cinzel&quot;,            use:&quot;Clean inscription capitals — the safest, most legible choice for tiny engravings.&quot;},
+    {cls:&quot;f-playfair&quot;,  name:&quot;Playfair Display&quot;,  tag:&quot;Serif&quot;,       g:&quot;Playfair+Display&quot;,  use:&quot;Elegant contrast with a modern edge; balanced for names and initials.&quot;},
+    {cls:&quot;f-josefin&quot;,   name:&quot;Josefin Sans&quot;,      tag:&quot;Modern&quot;,      g:&quot;Josefin+Sans&quot;,      use:&quot;Geometric and minimal with an art-deco air; unisex and contemporary.&quot;},
+    {cls:&quot;f-cinzeld&quot;,   name:&quot;Cinzel Decorative&quot;, tag:&quot;Ornate Caps&quot;, g:&quot;Cinzel+Decorative&quot;, use:&quot;Heritage engraved capitals with flourish — for crests, logos and statement initials.&quot;},
+    {cls:&quot;f-sacramento&quot;,name:&quot;Sacramento&quot;,        tag:&quot;Monoline&quot;,    g:&quot;Sacramento&quot;,        use:&quot;Even single-weight stroke — ideal for inside-ring engraving and rotary tools.&quot;},
+    {cls:&quot;f-alexbrush&quot;, name:&quot;Alex Brush&quot;,        tag:&quot;Brush Script&quot;,g:&quot;Alex+Brush&quot;,        use:&quot;Expressive brush signature; flowing and confident for names.&quot;},
+    {cls:&quot;f-parisienne&quot;,name:&quot;Parisienne&quot;,        tag:&quot;Casual Script&quot;,g:&quot;Parisienne&quot;,       use:&quot;Soft, feminine hand — friendly and personal on delicate pieces.&quot;},
+    {cls:&quot;f-marcellus&quot;, name:&quot;Marcellus&quot;,         tag:&quot;Refined Caps&quot;,g:&quot;Marcellus&quot;,         use:&quot;Understated Roman capitals; quiet luxury for monograms.&quot;},
+    {cls:&quot;f-italiana&quot;,  name:&quot;Italiana&quot;,          tag:&quot;Fashion Serif&quot;,g:&quot;Italiana&quot;,         use:&quot;Delicate high-fashion serif; elegant for short words.&quot;},
+    {cls:&quot;f-petit&quot;,     name:&quot;Petit Formal Script&quot;,tag:&quot;Fine Script&quot;,g:&quot;Petit+Formal+Script&quot;,use:&quot;Fine formal script; dainty for dates and small inscriptions.&quot;},
   ];
 
   const grid = document.getElementById(&quot;grid&quot;);
@@ -349,14 +361,57 @@
       '<div class=&quot;meta&quot;><div class=&quot;meta-top&quot;>'+
         '<span class=&quot;fname&quot;>'+f.name+'</span>'+
         '<span class=&quot;tag&quot;>'+f.tag+'</span></div>'+
-        '<p class=&quot;use&quot;>'+f.use+'</p></div>';
+        '<p class=&quot;use&quot;>'+f.use+'</p>'+
+        '<div class=&quot;actions&quot;>'+
+          '<button type=&quot;button&quot; class=&quot;btn primary dl&quot;>⬇ Save PNG</button>'+
+          '<a class=&quot;btn&quot; href=&quot;https://fonts.google.com/specimen/'+f.g+'&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;>Get font ↗</a>'+
+        '</div></div>';
     grid.appendChild(card);
+    const sample = card.querySelector(&quot;.sample&quot;);
     cards.push([
       card.querySelector(&quot;.l1&quot;),
       card.querySelector(&quot;.l2&quot;),
       card.querySelector(&quot;.l3&quot;),
     ]);
+    card.querySelector(&quot;.dl&quot;).addEventListener(&quot;click&quot;, () => savePNG(sample, f.name));
   });
+
+  // Render the sample into a PNG and download it (works on the live site; the
+  // in-app preview sandbox may block the download).
+  function savePNG(sampleEl, fontName){
+    const lines = [...sampleEl.querySelectorAll(&quot;.l1,.l2,.l3&quot;)].filter(el => el.textContent.trim());
+    if(!lines.length) return;
+    const S = 3, W = 1100 * S, padY = 80 * S;
+    const specs = lines.map(el => {
+      const cs = getComputedStyle(el);
+      const size = parseFloat(cs.fontSize) * S;
+      return { text: el.textContent, size,
+        font: cs.fontStyle+&quot; &quot;+cs.fontWeight+&quot; &quot;+size+&quot;px &quot;+cs.fontFamily,
+        ls: cs.letterSpacing===&quot;normal&quot; ? &quot;0px&quot; : cs.letterSpacing };
+    });
+    let H = padY * 2;
+    specs.forEach((s,i) => { H += s.size * 1.15; if(i) H += s.size * 0.12; });
+    const canvas = document.createElement(&quot;canvas&quot;);
+    canvas.width = W; canvas.height = Math.round(H);
+    const ctx = canvas.getContext(&quot;2d&quot;);
+    ctx.fillStyle = &quot;#f6efe2&quot;; ctx.fillRect(0,0,W,canvas.height);
+    ctx.fillStyle = &quot;#6d1f30&quot;; ctx.textAlign = &quot;center&quot;; ctx.textBaseline = &quot;alphabetic&quot;;
+    let y = padY;
+    document.fonts.ready.then(() => {
+      specs.forEach((s,i) => {
+        ctx.font = s.font;
+        try { ctx.letterSpacing = s.ls; } catch(e){}
+        y += s.size; ctx.fillText(s.text, W/2, y); y += s.size * 0.27;
+      });
+      canvas.toBlob(blob => {
+        const a = document.createElement(&quot;a&quot;);
+        a.href = URL.createObjectURL(blob);
+        a.download = &quot;REIA-&quot;+fontName.replace(/[^a-z0-9]+/gi,&quot;-&quot;)+&quot;.png&quot;;
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+      }, &quot;image/png&quot;);
+    });
+  }
 
   const defaults = [&quot;R ❤️ D&quot;,&quot;Réia Diamonds&quot;,&quot;04/03/2025&quot;];
   function render(){
