@@ -603,14 +603,13 @@ Réia Diamonds
         </div>
         <div class=&quot;btnrow&quot;>
           <button type=&quot;button&quot; class=&quot;dlbtn&quot; id=&quot;dlsheet&quot;>⬇ Download comparison</button>
-          <button type=&quot;button&quot; class=&quot;dlbtn ghost&quot; id=&quot;copysheet&quot;>⧉ Copy image</button>
+          <button type=&quot;button&quot; class=&quot;dlbtn ghost&quot; id=&quot;copytext&quot;>⧉ Copy text</button>
         </div>
         <div class=&quot;savefont&quot;>
           <select id=&quot;dlfont&quot; aria-label=&quot;Choose a font to save&quot;></select>
-          <button type=&quot;button&quot; class=&quot;dlbtn ghost&quot; id=&quot;dlone&quot;>⬇ Save</button>
-          <button type=&quot;button&quot; class=&quot;dlbtn ghost&quot; id=&quot;copyone&quot;>⧉ Copy</button>
+          <button type=&quot;button&quot; class=&quot;dlbtn ghost&quot; id=&quot;dlone&quot;>⬇ Save this font</button>
         </div>
-        <p class=&quot;fine&quot;>Download as a file, or Copy the image to paste straight into WhatsApp, email or a message.</p>
+        <p class=&quot;fine&quot;>Download the image/PDF/Word, or Copy text to paste the sample lines into WhatsApp, email or a message.</p>
       </div>
     </aside>
 
@@ -836,8 +835,12 @@ Réia Diamonds
       .catch(()=>{ btn.disabled=false; btn.textContent=label; alert(&quot;Could not render the file. Try fewer samples/fonts.&quot;); });
   }
   $(&quot;dlsheet&quot;).addEventListener(&quot;click&quot;,()=>withSheetCanvas($(&quot;dlsheet&quot;),c=>canvasToFile(c,&quot;REIA-font-comparison&quot;)));
-  $(&quot;copysheet&quot;).addEventListener(&quot;click&quot;,()=>withSheetCanvas($(&quot;copysheet&quot;),c=>copyCanvas(c)));
-  $(&quot;copyone&quot;).addEventListener(&quot;click&quot;,()=>copyRow(+dlfont.value));
+  $(&quot;copytext&quot;).addEventListener(&quot;click&quot;,async ()=>{
+    const S=samples();
+    if(!S.length){ flash(&quot;Add a sample first&quot;); return; }
+    try{ await navigator.clipboard.writeText(S.join(&quot;\n&quot;)); flash(&quot;Text copied — paste it into WhatsApp, email or a message&quot;); }
+    catch(e){ flash(&quot;Copy isn't allowed here — select the text manually&quot;); }
+  });
 
   build();
 </script>
