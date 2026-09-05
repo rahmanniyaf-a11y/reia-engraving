@@ -598,18 +598,14 @@ Réia Diamonds
           <div class=&quot;seg&quot; id=&quot;fmt&quot; role=&quot;group&quot; aria-label=&quot;File format&quot;>
             <button data-fmt=&quot;png&quot; aria-pressed=&quot;true&quot;>PNG</button>
             <button data-fmt=&quot;pdf&quot; aria-pressed=&quot;false&quot;>PDF</button>
-            <button data-fmt=&quot;word&quot; aria-pressed=&quot;false&quot;>Word</button>
           </div>
         </div>
-        <div class=&quot;btnrow&quot;>
-          <button type=&quot;button&quot; class=&quot;dlbtn&quot; id=&quot;dlsheet&quot;>⬇ Download comparison</button>
-          <button type=&quot;button&quot; class=&quot;dlbtn ghost&quot; id=&quot;copytext&quot;>⧉ Copy styled text</button>
-        </div>
+        <button type=&quot;button&quot; class=&quot;dlbtn&quot; id=&quot;dlsheet&quot;>⬇ Download comparison</button>
         <div class=&quot;savefont&quot;>
           <select id=&quot;dlfont&quot; aria-label=&quot;Choose a font&quot;></select>
           <button type=&quot;button&quot; class=&quot;dlbtn ghost&quot; id=&quot;dlone&quot;>⬇ Save this font</button>
         </div>
-        <p class=&quot;fine&quot;>Pick a font, then Copy styled text to paste it in that font into email or Word (needs the font installed; WhatsApp shows plain text). For a guaranteed look everywhere, use Download or the image.</p>
+        <p class=&quot;fine&quot;>Download the whole table as one file, or pick a single font to save on its own.</p>
       </div>
     </aside>
 
@@ -771,13 +767,6 @@ Réia Diamonds
       const pdf=new jsPDF({orientation: w>=h?&quot;landscape&quot;:&quot;portrait&quot;, unit:&quot;px&quot;, format:[w,h]});
       pdf.addImage(canvas.toDataURL(&quot;image/png&quot;),&quot;PNG&quot;,0,0,w,h);
       pdf.save(base+&quot;.pdf&quot;);
-    }else if(state.fmt===&quot;word&quot;){
-      const dataUrl=canvas.toDataURL(&quot;image/png&quot;);
-      const html='<html xmlns:o=&quot;urn:schemas-microsoft-com:office:office&quot; '+
-        'xmlns:w=&quot;urn:schemas-microsoft-com:office:word&quot; xmlns=&quot;http://www.w3.org/TR/REC-html40&quot;>'+
-        '<head><meta charset=&quot;utf-8&quot;><title>RÉIA Engraving</title></head>'+
-        '<body><img src=&quot;'+dataUrl+'&quot; style=&quot;max-width:100%&quot;/></body></html>';
-      triggerDownload(new Blob(['﻿'+html],{type:&quot;application/msword&quot;}), base+&quot;.doc&quot;);
     }else{
       canvas.toBlob(b=>triggerDownload(b,base+&quot;.png&quot;),&quot;image/png&quot;);
     }
@@ -835,26 +824,6 @@ Réia Diamonds
       .catch(()=>{ btn.disabled=false; btn.textContent=label; alert(&quot;Could not render the file. Try fewer samples/fonts.&quot;); });
   }
   $(&quot;dlsheet&quot;).addEventListener(&quot;click&quot;,()=>withSheetCanvas($(&quot;dlsheet&quot;),c=>canvasToFile(c,&quot;REIA-font-comparison&quot;)));
-  function esc(s){ return s.replace(/&amp;/g,&quot;&amp;amp;&quot;).replace(/</g,&quot;&amp;lt;&quot;).replace(/>/g,&quot;&amp;gt;&quot;); }
-  $(&quot;copytext&quot;).addEventListener(&quot;click&quot;,async ()=>{
-    const S=samples();
-    if(!S.length){ flash(&quot;Add a sample first&quot;); return; }
-    const f=FONTS[+dlfont.value];
-    const style=&quot;font-family:&quot;+f.cls+&quot;;color:#6d1f30;font-size:32px;line-height:1.3;&quot;+
-      (f.w?&quot;font-weight:&quot;+f.w+&quot;;&quot;:&quot;&quot;)+(f.i?&quot;font-style:italic;&quot;:&quot;&quot;)+(f.ls?&quot;letter-spacing:&quot;+f.ls+&quot;;&quot;:&quot;&quot;);
-    const html='<div style=&quot;'+style+'&quot;>'+S.map(t=>esc(t)).join(&quot;<br>&quot;)+&quot;</div>&quot;;
-    const plain=S.join(&quot;\n&quot;);
-    try{
-      await navigator.clipboard.write([new ClipboardItem({
-        &quot;text/html&quot;: new Blob([html],{type:&quot;text/html&quot;}),
-        &quot;text/plain&quot;: new Blob([plain],{type:&quot;text/plain&quot;})
-      })]);
-      flash(&quot;Copied in &quot;+f.name+&quot; — paste into email or Word (WhatsApp shows plain text)&quot;);
-    }catch(e){
-      try{ await navigator.clipboard.writeText(plain); flash(&quot;Copied as plain text&quot;); }
-      catch(_){ flash(&quot;Copy isn't allowed here — select the text manually&quot;); }
-    }
-  });
 
   build();
 </script>
