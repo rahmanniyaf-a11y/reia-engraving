@@ -603,13 +603,13 @@ Réia Diamonds
         </div>
         <div class=&quot;btnrow&quot;>
           <button type=&quot;button&quot; class=&quot;dlbtn&quot; id=&quot;dlsheet&quot;>⬇ Download comparison</button>
-          <button type=&quot;button&quot; class=&quot;dlbtn ghost&quot; id=&quot;copytext&quot;>⧉ Copy text</button>
+          <button type=&quot;button&quot; class=&quot;dlbtn ghost&quot; id=&quot;copytext&quot;>⧉ Copy styled text</button>
         </div>
         <div class=&quot;savefont&quot;>
-          <select id=&quot;dlfont&quot; aria-label=&quot;Choose a font to save&quot;></select>
+          <select id=&quot;dlfont&quot; aria-label=&quot;Choose a font&quot;></select>
           <button type=&quot;button&quot; class=&quot;dlbtn ghost&quot; id=&quot;dlone&quot;>⬇ Save this font</button>
         </div>
-        <p class=&quot;fine&quot;>Download the image/PDF/Word, or Copy text to paste the sample lines into WhatsApp, email or a message.</p>
+        <p class=&quot;fine&quot;>Pick a font, then Copy styled text to paste it in that font into email or Word (needs the font installed; WhatsApp shows plain text). For a guaranteed look everywhere, use Download or the image.</p>
       </div>
     </aside>
 
@@ -835,11 +835,25 @@ Réia Diamonds
       .catch(()=>{ btn.disabled=false; btn.textContent=label; alert(&quot;Could not render the file. Try fewer samples/fonts.&quot;); });
   }
   $(&quot;dlsheet&quot;).addEventListener(&quot;click&quot;,()=>withSheetCanvas($(&quot;dlsheet&quot;),c=>canvasToFile(c,&quot;REIA-font-comparison&quot;)));
+  function esc(s){ return s.replace(/&amp;/g,&quot;&amp;amp;&quot;).replace(/</g,&quot;&amp;lt;&quot;).replace(/>/g,&quot;&amp;gt;&quot;); }
   $(&quot;copytext&quot;).addEventListener(&quot;click&quot;,async ()=>{
     const S=samples();
     if(!S.length){ flash(&quot;Add a sample first&quot;); return; }
-    try{ await navigator.clipboard.writeText(S.join(&quot;\n&quot;)); flash(&quot;Text copied — paste it into WhatsApp, email or a message&quot;); }
-    catch(e){ flash(&quot;Copy isn't allowed here — select the text manually&quot;); }
+    const f=FONTS[+dlfont.value];
+    const style=&quot;font-family:&quot;+f.cls+&quot;;color:#6d1f30;font-size:32px;line-height:1.3;&quot;+
+      (f.w?&quot;font-weight:&quot;+f.w+&quot;;&quot;:&quot;&quot;)+(f.i?&quot;font-style:italic;&quot;:&quot;&quot;)+(f.ls?&quot;letter-spacing:&quot;+f.ls+&quot;;&quot;:&quot;&quot;);
+    const html='<div style=&quot;'+style+'&quot;>'+S.map(t=>esc(t)).join(&quot;<br>&quot;)+&quot;</div>&quot;;
+    const plain=S.join(&quot;\n&quot;);
+    try{
+      await navigator.clipboard.write([new ClipboardItem({
+        &quot;text/html&quot;: new Blob([html],{type:&quot;text/html&quot;}),
+        &quot;text/plain&quot;: new Blob([plain],{type:&quot;text/plain&quot;})
+      })]);
+      flash(&quot;Copied in &quot;+f.name+&quot; — paste into email or Word (WhatsApp shows plain text)&quot;);
+    }catch(e){
+      try{ await navigator.clipboard.writeText(plain); flash(&quot;Copied as plain text&quot;); }
+      catch(_){ flash(&quot;Copy isn't allowed here — select the text manually&quot;); }
+    }
   });
 
   build();
