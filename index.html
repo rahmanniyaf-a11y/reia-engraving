@@ -361,57 +361,14 @@
       '<div class=&quot;meta&quot;><div class=&quot;meta-top&quot;>'+
         '<span class=&quot;fname&quot;>'+f.name+'</span>'+
         '<span class=&quot;tag&quot;>'+f.tag+'</span></div>'+
-        '<p class=&quot;use&quot;>'+f.use+'</p>'+
-        '<div class=&quot;actions&quot;>'+
-          '<button type=&quot;button&quot; class=&quot;btn primary dl&quot;>⬇ Save PNG</button>'+
-          '<a class=&quot;btn&quot; href=&quot;https://fonts.google.com/specimen/'+f.g+'&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;>Get font ↗</a>'+
-        '</div></div>';
+        '<p class=&quot;use&quot;>'+f.use+'</p></div>';
     grid.appendChild(card);
-    const sample = card.querySelector(&quot;.sample&quot;);
     cards.push([
       card.querySelector(&quot;.l1&quot;),
       card.querySelector(&quot;.l2&quot;),
       card.querySelector(&quot;.l3&quot;),
     ]);
-    card.querySelector(&quot;.dl&quot;).addEventListener(&quot;click&quot;, () => savePNG(sample, f.name));
   });
-
-  // Render the sample into a PNG and download it (works on the live site; the
-  // in-app preview sandbox may block the download).
-  function savePNG(sampleEl, fontName){
-    const lines = [...sampleEl.querySelectorAll(&quot;.l1,.l2,.l3&quot;)].filter(el => el.textContent.trim());
-    if(!lines.length) return;
-    const S = 3, W = 1100 * S, padY = 80 * S;
-    const specs = lines.map(el => {
-      const cs = getComputedStyle(el);
-      const size = parseFloat(cs.fontSize) * S;
-      return { text: el.textContent, size,
-        font: cs.fontStyle+&quot; &quot;+cs.fontWeight+&quot; &quot;+size+&quot;px &quot;+cs.fontFamily,
-        ls: cs.letterSpacing===&quot;normal&quot; ? &quot;0px&quot; : cs.letterSpacing };
-    });
-    let H = padY * 2;
-    specs.forEach((s,i) => { H += s.size * 1.15; if(i) H += s.size * 0.12; });
-    const canvas = document.createElement(&quot;canvas&quot;);
-    canvas.width = W; canvas.height = Math.round(H);
-    const ctx = canvas.getContext(&quot;2d&quot;);
-    ctx.fillStyle = &quot;#f6efe2&quot;; ctx.fillRect(0,0,W,canvas.height);
-    ctx.fillStyle = &quot;#6d1f30&quot;; ctx.textAlign = &quot;center&quot;; ctx.textBaseline = &quot;alphabetic&quot;;
-    let y = padY;
-    document.fonts.ready.then(() => {
-      specs.forEach((s,i) => {
-        ctx.font = s.font;
-        try { ctx.letterSpacing = s.ls; } catch(e){}
-        y += s.size; ctx.fillText(s.text, W/2, y); y += s.size * 0.27;
-      });
-      canvas.toBlob(blob => {
-        const a = document.createElement(&quot;a&quot;);
-        a.href = URL.createObjectURL(blob);
-        a.download = &quot;REIA-&quot;+fontName.replace(/[^a-z0-9]+/gi,&quot;-&quot;)+&quot;.png&quot;;
-        document.body.appendChild(a); a.click(); a.remove();
-        setTimeout(() => URL.revokeObjectURL(a.href), 3000);
-      }, &quot;image/png&quot;);
-    });
-  }
 
   const defaults = [&quot;R ❤️ D&quot;,&quot;Réia Diamonds&quot;,&quot;04/03/2025&quot;];
   function render(){
@@ -602,11 +559,6 @@ Réia Diamonds
       <div class=&quot;panel&quot;>
         <label class=&quot;plabel&quot;>Display</label>
         <div class=&quot;ctl&quot;>
-          <label for=&quot;size&quot;>Sample size</label>
-          <input id=&quot;size&quot; type=&quot;range&quot; min=&quot;20&quot; max=&quot;72&quot; value=&quot;38&quot;>
-          <span class=&quot;val&quot; id=&quot;sizeval&quot;>38px</span>
-        </div>
-        <div class=&quot;ctl&quot;>
           <label>Plate tone</label>
           <div class=&quot;seg&quot; id=&quot;tone&quot; role=&quot;group&quot; aria-label=&quot;Plate tone&quot;>
             <button data-tone=&quot;warm&quot; aria-pressed=&quot;true&quot;>Warm</button>
@@ -630,7 +582,14 @@ Réia Diamonds
 
       <div class=&quot;panel&quot;>
         <label class=&quot;plabel&quot;>Save</label>
-        <button type=&quot;button&quot; class=&quot;dlbtn&quot; id=&quot;dlsheet&quot;>⬇ Download comparison (PNG)</button>
+        <div class=&quot;ctl&quot; style=&quot;margin-bottom:12px&quot;>
+          <label>Format</label>
+          <div class=&quot;seg&quot; id=&quot;fmt&quot; role=&quot;group&quot; aria-label=&quot;File format&quot;>
+            <button data-fmt=&quot;png&quot; aria-pressed=&quot;true&quot;>PNG</button>
+            <button data-fmt=&quot;pdf&quot; aria-pressed=&quot;false&quot;>PDF</button>
+          </div>
+        </div>
+        <button type=&quot;button&quot; class=&quot;dlbtn&quot; id=&quot;dlsheet&quot;>⬇ Download comparison</button>
         <div class=&quot;savefont&quot;>
           <select id=&quot;dlfont&quot; aria-label=&quot;Choose a font to save&quot;></select>
           <button type=&quot;button&quot; class=&quot;dlbtn ghost&quot; id=&quot;dlone&quot;>⬇ Save this font</button>
@@ -651,6 +610,7 @@ Réia Diamonds
 </div>
 
 <script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js&quot;></script>
+<script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js&quot;></script>
 <script>
   const FONTS = [
     {cls:'&quot;Great Vibes&quot;,cursive',       name:&quot;Great Vibes&quot;,       tag:&quot;Script&quot;,       s:1.28},
@@ -676,7 +636,7 @@ Réia Diamonds
   };
 
   const $ = id => document.getElementById(id);
-  const state = { size:38, tone:&quot;warm&quot;, hidden:new Set() };
+  const state = { size:20, tone:&quot;warm&quot;, fmt:&quot;png&quot;, hidden:new Set() };
 
   // font checkbox list
   const chipWrap = $(&quot;fontchips&quot;);
@@ -696,7 +656,6 @@ Réia Diamonds
   $(&quot;selnone&quot;).addEventListener(&quot;click&quot;,()=>{ FONTS.forEach((_,i)=>state.hidden.add(i)); syncChips(); build(); });
 
   // controls
-  $(&quot;size&quot;).addEventListener(&quot;input&quot;,e=>{state.size=+e.target.value;$(&quot;sizeval&quot;).textContent=state.size+&quot;px&quot;;applySize()});
   $(&quot;tone&quot;).addEventListener(&quot;click&quot;,e=>{
     const btn=e.target.closest(&quot;button&quot;); if(!btn)return;
     state.tone=btn.dataset.tone;
@@ -704,6 +663,11 @@ Réia Diamonds
     applyTone();
   });
   $(&quot;samples&quot;).addEventListener(&quot;input&quot;,build);
+  $(&quot;fmt&quot;).addEventListener(&quot;click&quot;,e=>{
+    const btn=e.target.closest(&quot;button&quot;); if(!btn)return;
+    state.fmt=btn.dataset.fmt;
+    [...$(&quot;fmt&quot;).children].forEach(b=>b.setAttribute(&quot;aria-pressed&quot;, b===btn?&quot;true&quot;:&quot;false&quot;));
+  });
 
   function samples(){
     return $(&quot;samples&quot;).value.split(&quot;\n&quot;).map(s=>s.trim()).filter(Boolean);
@@ -784,6 +748,19 @@ Réia Diamonds
     setTimeout(()=>URL.revokeObjectURL(a.href),3000);
   }
 
+  // Save a rendered canvas as PNG or PDF, per the chosen format.
+  function canvasToFile(canvas, base){
+    if(state.fmt===&quot;pdf&quot; &amp;&amp; window.jspdf){
+      const {jsPDF}=window.jspdf;
+      const w=canvas.width, h=canvas.height;
+      const pdf=new jsPDF({orientation: w>=h?&quot;landscape&quot;:&quot;portrait&quot;, unit:&quot;px&quot;, format:[w,h]});
+      pdf.addImage(canvas.toDataURL(&quot;image/png&quot;),&quot;PNG&quot;,0,0,w,h);
+      pdf.save(base+&quot;.pdf&quot;);
+    }else{
+      canvas.toBlob(b=>triggerDownload(b,base+&quot;.png&quot;),&quot;image/png&quot;);
+    }
+  }
+
   // Save one font with all current samples, stacked, as a PNG.
   function saveRow(i){
     const f=FONTS[i], S=samples();
@@ -804,7 +781,7 @@ Réia Diamonds
         ctx.font=font; try{ctx.letterSpacing=ls;}catch(e){}
         y+=size; ctx.fillText(txt,W/2,y); y+=size*0.34;
       });
-      c.toBlob(b=>triggerDownload(b,&quot;REIA-&quot;+f.name.replace(/[^a-z0-9]+/gi,&quot;-&quot;)+&quot;.png&quot;),&quot;image/png&quot;);
+      canvasToFile(c,&quot;REIA-&quot;+f.name.replace(/[^a-z0-9]+/gi,&quot;-&quot;));
     });
   }
 
@@ -815,8 +792,8 @@ Réia Diamonds
     btn.disabled=true; const label=btn.textContent; btn.textContent=&quot;Rendering…&quot;;
     const bg=getComputedStyle(document.body).backgroundColor;
     document.fonts.ready.then(()=>html2canvas(table,{backgroundColor:bg,scale:2,windowWidth:table.scrollWidth}))
-      .then(canvas=>canvas.toBlob(b=>{ triggerDownload(b,&quot;REIA-font-comparison.png&quot;); btn.disabled=false; btn.textContent=label; },&quot;image/png&quot;))
-      .catch(()=>{ btn.disabled=false; btn.textContent=label; alert(&quot;Could not render the image. Try fewer samples/fonts.&quot;); });
+      .then(canvas=>{ canvasToFile(canvas,&quot;REIA-font-comparison&quot;); btn.disabled=false; btn.textContent=label; })
+      .catch(()=>{ btn.disabled=false; btn.textContent=label; alert(&quot;Could not render the file. Try fewer samples/fonts.&quot;); });
   });
 
   build();
