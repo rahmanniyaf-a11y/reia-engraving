@@ -200,13 +200,10 @@
   /* engraved look: incised text = highlight below the maroon fill */
   .sample{
     color:var(--maroon);line-height:1.05;word-break:break-word;
-    text-shadow:0 1px 0 rgba(255,255,255,.55);
   }
   .sample .l1{display:block}
   .sample .l2{display:block;font-size:.6em;margin-top:.18em}
   .sample .l3{display:block;font-size:.34em;letter-spacing:.05em;margin-top:.28em;opacity:.85}
-  :root[data-theme=&quot;dark&quot;] .sample,
-  :root:not([data-theme=&quot;light&quot;]) .sample{ text-shadow:0 1px 0 rgba(0,0,0,.6) }
 
   .meta{padding:16px 20px 20px;display:flex;flex-direction:column;gap:10px;flex:1}
   .meta-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
@@ -472,10 +469,7 @@
   .ftag{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-top:2px}
   td.cell{text-align:center;padding:16px 18px;background:var(--plate)}
   tbody tr:nth-child(even) td.cell{background:var(--plate-alt)}
-  .samp{color:var(--maroon);line-height:1.1;word-break:break-word;
-    text-shadow:0 1px 0 rgba(255,255,255,.5);display:inline-block}
-  :root[data-theme=&quot;dark&quot;] .samp,
-  :root:not([data-theme=&quot;light&quot;]) .samp{text-shadow:0 1px 0 rgba(0,0,0,.6)}
+  .samp{color:var(--maroon);line-height:1.1;word-break:break-word;display:inline-block}
   .empty{color:var(--ink-soft);font-style:italic;font-family:&quot;Jost&quot;,sans-serif;font-size:13px;
     text-shadow:none;opacity:.7}
 
@@ -664,7 +658,6 @@ Forever</textarea>
       });
       tr.querySelectorAll(&quot;.samp&quot;).forEach(s=>{
         s.style.color = state.tone===&quot;dark&quot; ? &quot;#d6b3b9&quot; : &quot;var(--maroon)&quot;;
-        s.style.textShadow = state.tone===&quot;dark&quot; ? &quot;0 1px 0 rgba(0,0,0,.6)&quot; : &quot;0 1px 0 rgba(255,255,255,.5)&quot;;
       });
     });
   }
