@@ -1,0 +1,690 @@
+<title>RÉIA Engraving Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Jost:wght@300;400;500&display=swap">
+<style>
+  :root{
+    --ground:#f3ebdf;--bar:#fbf6ee;--edge:#e5d9c6;
+    --ink:#2c2620;--ink-soft:#6d6154;--maroon:#6d1f30;--gold:#a9803f;--gold-soft:#c8a262;
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+    --ground:#141011;--bar:#1e1819;--edge:#312527;
+    --ink:#efe7df;--ink-soft:#a9948d;--maroon:#c69aa1;--gold:#c2a063;--gold-soft:#d9c091;
+  }}
+  :root[data-theme="dark"]{
+    --ground:#141011;--bar:#1e1819;--edge:#312527;
+    --ink:#efe7df;--ink-soft:#a9948d;--maroon:#c69aa1;--gold:#c2a063;--gold-soft:#d9c091;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--ground);color:var(--ink);
+    font-family:"Jost",system-ui,sans-serif;display:flex;flex-direction:column}
+  .topbar{
+    flex:none;background:var(--bar);border-bottom:1px solid var(--edge);
+    display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+    padding:12px clamp(14px,3vw,26px);
+  }
+  .id{display:flex;align-items:baseline;gap:12px;margin-right:auto}
+  .id .brand{font-family:"Cinzel",serif;font-weight:600;letter-spacing:.3em;
+    font-size:15px;color:var(--maroon);margin-left:.3em}
+  .id .studio{font-family:"Cormorant Garamond",serif;font-style:italic;
+    font-size:15px;color:var(--ink-soft)}
+  @media (max-width:520px){.id .studio{display:none}}
+  .tabs{display:flex;gap:8px}
+  .tab{
+    font:inherit;font-size:13.5px;cursor:pointer;
+    padding:8px 16px;border-radius:22px;border:1px solid var(--gold-soft);
+    background:transparent;color:var(--gold);display:inline-flex;align-items:center;gap:7px;
+    transition:background .15s,color .15s;
+  }
+  .tab:hover{border-color:var(--gold)}
+  .tab[aria-selected="true"]{background:var(--maroon);border-color:var(--maroon);color:#fff}
+  :root[data-theme="dark"] .tab[aria-selected="true"],
+  :root:not([data-theme="light"]) .tab[aria-selected="true"]{color:#1b1112}
+  .tab:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  main{flex:1;position:relative;min-height:0}
+  iframe{position:absolute;inset:0;width:100%;height:100%;border:none;background:var(--ground)}
+  iframe[hidden]{display:none}
+</style>
+
+<div class="topbar">
+  <div class="id">
+    <span class="brand">RÉIA</span>
+    <span class="studio">Engraving Studio</span>
+  </div>
+  <div class="tabs" role="tablist" aria-label="Views">
+    <button class="tab" id="tab-book"  role="tab" aria-selected="true"  aria-controls="frame-book">💍 Type Book</button>
+    <button class="tab" id="tab-bench" role="tab" aria-selected="false" aria-controls="frame-bench">✒️ Workbench</button>
+  </div>
+</div>
+
+<main>
+  <iframe id="frame-book"  title="Engraving Type Book" srcdoc="<title>RÉIA Engraving Type</title>
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot;>
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin>
+<link rel=&quot;stylesheet&quot; href=&quot;https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&amp;family=Great+Vibes&amp;family=Allura&amp;family=Pinyon+Script&amp;family=Tangerine:wght@400;700&amp;family=Cinzel:wght@400;500;600&amp;family=Cinzel+Decorative:wght@400;700&amp;family=Playfair+Display:ital,wght@0,400;0,600;1,400&amp;family=Josefin+Sans:wght@300;400;600&amp;family=Sacramento&amp;family=Alex+Brush&amp;family=Parisienne&amp;family=Marcellus&amp;family=Italiana&amp;family=Petit+Formal+Script&amp;family=Jost:wght@300;400;500&amp;display=swap&quot;>
+<style>
+  :root{
+    --ground:#f3ebdf;
+    --panel:#fbf6ee;
+    --panel-edge:#e5d9c6;
+    --ink:#2c2620;
+    --ink-soft:#6d6154;
+    --maroon:#6d1f30;
+    --maroon-deep:#4d1421;
+    --gold:#a9803f;
+    --gold-soft:#c8a262;
+    --hairline:#e2d5c2;
+    --engrave-plate:#ece1d0;
+    --shadow:0 1px 2px rgba(77,20,33,.05),0 10px 30px rgba(77,20,33,.06);
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme=&quot;light&quot;]){
+      --ground:#141011;
+      --panel:#1e1819;
+      --panel-edge:#312527;
+      --ink:#efe7df;
+      --ink-soft:#a9948d;
+      --maroon:#c69aa1;
+      --maroon-deep:#d8b3b9;
+      --gold:#c2a063;
+      --gold-soft:#d9c091;
+      --hairline:#2f2528;
+      --engrave-plate:#221b1c;
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 38px rgba(0,0,0,.55);
+    }
+  }
+  :root[data-theme=&quot;dark&quot;]{
+    --ground:#141011;
+    --panel:#1e1819;
+    --panel-edge:#312527;
+    --ink:#efe7df;
+    --ink-soft:#a9948d;
+    --maroon:#c69aa1;
+    --maroon-deep:#d8b3b9;
+    --gold:#c2a063;
+    --gold-soft:#d9c091;
+    --hairline:#2f2528;
+    --engrave-plate:#221b1c;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 38px rgba(0,0,0,.55);
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0;background:var(--ground);color:var(--ink);
+    font-family:&quot;Jost&quot;,system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;line-height:1.6;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:clamp(24px,5vw,64px) clamp(18px,4vw,40px) 80px}
+
+  /* ---- header ---- */
+  header{text-align:center;padding-bottom:8px}
+  .brand{
+    font-family:&quot;Cinzel&quot;,serif;font-weight:600;
+    letter-spacing:.42em;font-size:clamp(15px,2.4vw,20px);
+    color:var(--maroon);margin:0;padding-left:.42em;
+  }
+  .brand-rule{
+    width:54px;height:1px;background:var(--gold);margin:16px auto 22px;
+    position:relative;
+  }
+  .brand-rule::before,.brand-rule::after{
+    content:&quot;&quot;;position:absolute;top:50%;width:5px;height:5px;
+    border:1px solid var(--gold);transform:translateY(-50%) rotate(45deg);
+  }
+  .brand-rule::before{left:-12px}.brand-rule::after{right:-12px}
+  h1{
+    font-family:&quot;Cormorant Garamond&quot;,serif;font-weight:500;
+    font-size:clamp(32px,5.4vw,52px);line-height:1.02;margin:0;
+    text-wrap:balance;letter-spacing:-.015em;
+  }
+  h1 em{font-style:italic;font-weight:500;color:var(--maroon)}
+  .lede{
+    max-width:52ch;margin:16px auto 0;color:var(--ink-soft);
+    font-size:clamp(13.5px,1.5vw,16px);line-height:1.65;text-wrap:pretty;
+  }
+  .eyebrow{
+    font-family:&quot;Jost&quot;,sans-serif;font-size:10.5px;font-weight:500;
+    letter-spacing:.32em;text-transform:uppercase;color:var(--gold);
+    margin:0 0 16px;padding-left:.32em;
+  }
+
+  /* ---- personalize bar ---- */
+  .personalize{
+    margin:38px auto 6px;max-width:560px;
+    background:var(--panel);border:1px solid var(--panel-edge);
+    border-radius:2px;box-shadow:var(--shadow);
+    padding:18px 22px;text-align:center;
+  }
+  .personalize label{
+    display:block;font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--gold);margin-bottom:10px;
+  }
+  .personalize .fields{display:flex;flex-direction:column;gap:12px}
+  .personalize input{
+    width:100%;border:none;background:transparent;
+    border-bottom:1px solid var(--hairline);
+    text-align:center;color:var(--ink);
+    font-family:&quot;Cormorant Garamond&quot;,serif;
+    padding:4px 6px 8px;outline:none;transition:border-color .2s;
+  }
+  .personalize #initials{font-size:26px}
+  .personalize #line2{font-size:22px}
+  .personalize #line3{font-size:17px;letter-spacing:.06em}
+  .personalize input:focus{border-color:var(--gold)}
+  .personalize .hint{margin-top:10px;font-size:12px;color:var(--ink-soft)}
+
+  /* ---- grid ---- */
+  .grid{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+    gap:20px;margin-top:34px;
+  }
+  .card{
+    background:var(--panel);border:1px solid var(--panel-edge);
+    border-radius:2px;box-shadow:var(--shadow);
+    display:flex;flex-direction:column;overflow:hidden;
+  }
+  .plate{
+    position:relative;
+    background:var(--engrave-plate);
+    border-bottom:1px solid var(--hairline);
+    min-height:186px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:6px;
+    padding:26px 20px;text-align:center;
+  }
+  .idx{
+    position:absolute;top:11px;left:13px;
+    font-family:&quot;Jost&quot;,sans-serif;font-size:10px;font-weight:500;
+    letter-spacing:.16em;color:var(--gold);opacity:.75;
+    font-variant-numeric:tabular-nums;
+  }
+  /* engraved look: incised text = highlight below the maroon fill */
+  .sample{
+    color:var(--maroon);line-height:1.05;word-break:break-word;
+    text-shadow:0 1px 0 rgba(255,255,255,.55);
+  }
+  .sample .l1{display:block}
+  .sample .l2{display:block;font-size:.6em;margin-top:.18em}
+  .sample .l3{display:block;font-size:.34em;letter-spacing:.05em;margin-top:.28em;opacity:.85}
+  :root[data-theme=&quot;dark&quot;] .sample,
+  :root:not([data-theme=&quot;light&quot;]) .sample{ text-shadow:0 1px 0 rgba(0,0,0,.6) }
+
+  .meta{padding:16px 20px 20px;display:flex;flex-direction:column;gap:10px;flex:1}
+  .meta-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+  .fname{font-family:&quot;Cormorant Garamond&quot;,serif;font-size:21px;font-weight:600;color:var(--ink)}
+  .tag{
+    font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--gold);border:1px solid var(--gold-soft);
+    padding:3px 8px;border-radius:20px;white-space:nowrap;flex:none;
+  }
+  .use{font-size:13px;color:var(--ink-soft);margin:0}
+
+  /* sample font faces */
+  .f-vibes{font-family:&quot;Great Vibes&quot;,cursive;font-size:46px}
+  .f-allura{font-family:&quot;Allura&quot;,cursive;font-size:50px}
+  .f-pinyon{font-family:&quot;Pinyon Script&quot;,cursive;font-size:44px}
+  .f-tangerine{font-family:&quot;Tangerine&quot;,cursive;font-size:60px;font-weight:700}
+  .f-cormorant{font-family:&quot;Cormorant Garamond&quot;,serif;font-size:40px;font-style:italic}
+  .f-cinzel{font-family:&quot;Cinzel&quot;,serif;font-size:30px;font-weight:600;letter-spacing:.04em}
+  .f-playfair{font-family:&quot;Playfair Display&quot;,serif;font-size:34px}
+  .f-josefin{font-family:&quot;Josefin Sans&quot;,sans-serif;font-size:30px;font-weight:300;letter-spacing:.08em}
+  .f-cinzeld{font-family:&quot;Cinzel Decorative&quot;,serif;font-size:28px;font-weight:700;letter-spacing:.03em}
+  .f-sacramento{font-family:&quot;Sacramento&quot;,cursive;font-size:48px}
+  .f-alexbrush{font-family:&quot;Alex Brush&quot;,cursive;font-size:48px}
+  .f-parisienne{font-family:&quot;Parisienne&quot;,cursive;font-size:44px}
+  .f-marcellus{font-family:&quot;Marcellus&quot;,serif;font-size:30px;letter-spacing:.03em}
+  .f-italiana{font-family:&quot;Italiana&quot;,serif;font-size:32px}
+  .f-petit{font-family:&quot;Petit Formal Script&quot;,cursive;font-size:40px}
+
+  /* ---- notes ---- */
+  .notes{
+    margin-top:44px;background:var(--panel);border:1px solid var(--panel-edge);
+    border-radius:2px;padding:clamp(22px,3.5vw,34px);box-shadow:var(--shadow);
+  }
+  .notes h2{
+    font-family:&quot;Cinzel&quot;,serif;font-weight:600;font-size:13px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--maroon);margin:0 0 18px;
+  }
+  .notes ul{margin:0;padding:0;list-style:none;display:grid;gap:14px}
+  .notes li{display:flex;gap:12px;font-size:14.5px;color:var(--ink);max-width:70ch}
+  .notes li::before{content:&quot;◆&quot;;color:var(--gold);font-size:10px;line-height:1.7;flex:none}
+  .notes b{color:var(--maroon);font-weight:600}
+
+  footer{
+    text-align:center;margin-top:46px;color:var(--ink-soft);
+    font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;
+  }
+  footer .dot{color:var(--gold);margin:0 8px}
+
+  /* tablet / iPad: keep two roomy columns, slightly softened sample sizes */
+  @media (min-width:641px) and (max-width:1024px){
+    .grid{grid-template-columns:repeat(2,1fr);gap:18px}
+    .wrap{padding-left:clamp(18px,3vw,32px);padding-right:clamp(18px,3vw,32px)}
+    .f-vibes{font-size:42px}.f-allura{font-size:44px}.f-tangerine{font-size:52px}
+    .f-sacramento{font-size:42px}.f-alexbrush{font-size:42px}.f-parisienne{font-size:40px}
+  }
+  @media (max-width:640px){
+    .wrap{padding-left:14px;padding-right:14px}
+    .grid{grid-template-columns:1fr;gap:14px}
+    .plate{min-height:140px;padding:20px 16px;gap:4px}
+    .personalize{padding:16px 16px}
+    /* scale each sample down so it never overflows a phone card */
+    .f-vibes{font-size:34px}.f-allura{font-size:36px}.f-pinyon{font-size:32px}
+    .f-tangerine{font-size:44px}.f-cormorant{font-size:29px}.f-cinzel{font-size:22px}
+    .f-playfair{font-size:25px}.f-josefin{font-size:22px}.f-cinzeld{font-size:20px}
+    .f-sacramento{font-size:35px}.f-alexbrush{font-size:35px}.f-parisienne{font-size:32px}
+    .f-marcellus{font-size:22px}.f-italiana{font-size:24px}.f-petit{font-size:30px}
+  }
+  @media (max-width:380px){
+    .tag{display:none}
+  }
+  @media print{
+    body{background:#fff}
+    .personalize .hint{display:none}
+    .card,.notes,.personalize{box-shadow:none}
+  }
+</style>
+
+<div class=&quot;wrap&quot;>
+  <header>
+    <p class=&quot;eyebrow&quot;>Fine Jewellery · Custom Engraving</p>
+    <h1>The Engraving <em>Type Book</em></h1>
+    <p class=&quot;lede&quot;>Personalising fine jewellery — names, initials, dates and short inscriptions, incised inside a band or across a pendant. Enter your text below to preview every style.</p>
+  </header>
+
+  <div class=&quot;personalize&quot;>
+    <label>Preview your engraving</label>
+    <div class=&quot;fields&quot;>
+      <input id=&quot;initials&quot; type=&quot;text&quot; value=&quot;R ❤️ D&quot; maxlength=&quot;16&quot; autocomplete=&quot;off&quot; aria-label=&quot;Initials line&quot;>
+      <input id=&quot;line2&quot; type=&quot;text&quot; value=&quot;Réia Diamonds&quot; maxlength=&quot;24&quot; autocomplete=&quot;off&quot; aria-label=&quot;Name line&quot;>
+      <input id=&quot;line3&quot; type=&quot;text&quot; value=&quot;04/03/2025&quot; maxlength=&quot;20&quot; autocomplete=&quot;off&quot; aria-label=&quot;Date line&quot;>
+    </div>
+    <p class=&quot;hint&quot;>Initials &amp;middot; Name &amp;middot; Date — edit any line and every font updates live.</p>
+  </div>
+
+  <section class=&quot;grid&quot; id=&quot;grid&quot;>
+    <!-- cards injected -->
+  </section>
+
+  <section class=&quot;notes&quot;>
+    <h2>Choosing for the piece</h2>
+    <ul>
+      <li><span><b>Inside a ring band?</b> Choose a monoline or Roman-capital style — Sacramento or Cinzel. Fine hairline scripts can break or blur in a 1.5&amp;nbsp;mm channel.</span></li>
+      <li><span><b>Very small area or curved surface?</b> Uppercase serifs (Cinzel, Cinzel Decorative) hold their shape best when the letters are tiny.</span></li>
+      <li><span><b>Names &amp;amp; sentiments on pendants and bangles?</b> The flowing scripts — Great Vibes, Allura, Pinyon — read as romantic and personal.</span></li>
+      <li><span><b>Always preview at true size.</b> Legibility changes below roughly 3&amp;nbsp;mm letter height, so we approve every engraving at actual scale before cutting.</span></li>
+    </ul>
+  </section>
+
+  <footer>Custom Engraving <span class=&quot;dot&quot;>◆</span> RÉIA Fine Jewellery <span class=&quot;dot&quot;>◆</span> Ask your consultant for a sample</footer>
+</div>
+
+<script>
+  const fonts = [
+    {cls:&quot;f-vibes&quot;,     name:&quot;Great Vibes&quot;,       tag:&quot;Script&quot;,      use:&quot;Romantic flowing calligraphy — a signature choice for names on pendants and outer bands.&quot;},
+    {cls:&quot;f-allura&quot;,    name:&quot;Allura&quot;,            tag:&quot;Fine Script&quot;, use:&quot;Delicate, airy connecting script; elegant for longer names where a light touch is wanted.&quot;},
+    {cls:&quot;f-pinyon&quot;,    name:&quot;Pinyon Script&quot;,     tag:&quot;Formal Script&quot;,use:&quot;Copperplate wedding style — the classic pick for monograms and initials.&quot;},
+    {cls:&quot;f-tangerine&quot;, name:&quot;Tangerine&quot;,         tag:&quot;Swash Script&quot;,use:&quot;Graceful with pretty swashes; lovely on thin bands and slender bracelets.&quot;},
+    {cls:&quot;f-cormorant&quot;, name:&quot;Cormorant Italic&quot;,  tag:&quot;Serif&quot;,       use:&quot;Refined high-contrast serif; premium and timeless for a short quote or name.&quot;},
+    {cls:&quot;f-cinzel&quot;,    name:&quot;Cinzel&quot;,            tag:&quot;Roman Caps&quot;,  use:&quot;Clean inscription capitals — the safest, most legible choice for tiny engravings.&quot;},
+    {cls:&quot;f-playfair&quot;,  name:&quot;Playfair Display&quot;,  tag:&quot;Serif&quot;,       use:&quot;Elegant contrast with a modern edge; balanced for names and initials.&quot;},
+    {cls:&quot;f-josefin&quot;,   name:&quot;Josefin Sans&quot;,      tag:&quot;Modern&quot;,      use:&quot;Geometric and minimal with an art-deco air; unisex and contemporary.&quot;},
+    {cls:&quot;f-cinzeld&quot;,   name:&quot;Cinzel Decorative&quot;, tag:&quot;Ornate Caps&quot;, use:&quot;Heritage engraved capitals with flourish — for crests, logos and statement initials.&quot;},
+    {cls:&quot;f-sacramento&quot;,name:&quot;Sacramento&quot;,        tag:&quot;Monoline&quot;,    use:&quot;Even single-weight stroke — ideal for inside-ring engraving and rotary tools.&quot;},
+    {cls:&quot;f-alexbrush&quot;, name:&quot;Alex Brush&quot;,        tag:&quot;Brush Script&quot;,use:&quot;Expressive brush signature; flowing and confident for names.&quot;},
+    {cls:&quot;f-parisienne&quot;,name:&quot;Parisienne&quot;,        tag:&quot;Casual Script&quot;,use:&quot;Soft, feminine hand — friendly and personal on delicate pieces.&quot;},
+    {cls:&quot;f-marcellus&quot;, name:&quot;Marcellus&quot;,         tag:&quot;Refined Caps&quot;,use:&quot;Understated Roman capitals; quiet luxury for monograms.&quot;},
+    {cls:&quot;f-italiana&quot;,  name:&quot;Italiana&quot;,          tag:&quot;Fashion Serif&quot;,use:&quot;Delicate high-fashion serif; elegant for short words.&quot;},
+    {cls:&quot;f-petit&quot;,     name:&quot;Petit Formal Script&quot;,tag:&quot;Fine Script&quot;,use:&quot;Fine formal script; dainty for dates and small inscriptions.&quot;},
+  ];
+
+  const grid = document.getElementById(&quot;grid&quot;);
+  const inputs = [&quot;initials&quot;,&quot;line2&quot;,&quot;line3&quot;].map(id => document.getElementById(id));
+  const cards = [];
+
+  fonts.forEach((f,idx) => {
+    const num = String(idx+1).padStart(2,&quot;0&quot;);
+    const card = document.createElement(&quot;article&quot;);
+    card.className = &quot;card&quot;;
+    card.innerHTML =
+      '<div class=&quot;plate&quot;><span class=&quot;idx&quot;>'+num+'</span><span class=&quot;sample '+f.cls+'&quot;>'+
+        '<span class=&quot;l1&quot;></span><span class=&quot;l2&quot;></span><span class=&quot;l3&quot;></span>'+
+      '</span></div>'+
+      '<div class=&quot;meta&quot;><div class=&quot;meta-top&quot;>'+
+        '<span class=&quot;fname&quot;>'+f.name+'</span>'+
+        '<span class=&quot;tag&quot;>'+f.tag+'</span></div>'+
+        '<p class=&quot;use&quot;>'+f.use+'</p></div>';
+    grid.appendChild(card);
+    cards.push([
+      card.querySelector(&quot;.l1&quot;),
+      card.querySelector(&quot;.l2&quot;),
+      card.querySelector(&quot;.l3&quot;),
+    ]);
+  });
+
+  const defaults = [&quot;R ❤️ D&quot;,&quot;Réia Diamonds&quot;,&quot;04/03/2025&quot;];
+  function render(){
+    const vals = inputs.map((el,i) => el.value.trim() || defaults[i]);
+    for(const lines of cards){
+      lines.forEach((el,i) => el.textContent = vals[i]);
+    }
+  }
+  inputs.forEach(el => el.addEventListener(&quot;input&quot;, render));
+  render();
+</script>
+"></iframe>
+  <iframe id="frame-bench" title="Engraving Workbench" hidden srcdoc="<title>RÉIA Engraving Workbench</title>
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot;>
+<link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin>
+<link rel=&quot;stylesheet&quot; href=&quot;https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&amp;family=Great+Vibes&amp;family=Allura&amp;family=Pinyon+Script&amp;family=Tangerine:wght@400;700&amp;family=Cinzel:wght@400;500;600&amp;family=Cinzel+Decorative:wght@400;700&amp;family=Playfair+Display:ital,wght@0,400;0,600;1,400&amp;family=Josefin+Sans:wght@300;400;600&amp;family=Sacramento&amp;family=Alex+Brush&amp;family=Parisienne&amp;family=Marcellus&amp;family=Italiana&amp;family=Petit+Formal+Script&amp;family=Jost:wght@300;400;500&amp;display=swap&quot;>
+<style>
+  :root{
+    --ground:#f3ebdf;--panel:#fbf6ee;--panel-edge:#e5d9c6;
+    --ink:#2c2620;--ink-soft:#6d6154;
+    --maroon:#6d1f30;--gold:#a9803f;--gold-soft:#c8a262;
+    --hairline:#e2d5c2;--plate:#ece1d0;--plate-alt:#f1e8d9;
+    --shadow:0 1px 2px rgba(77,20,33,.05),0 10px 30px rgba(77,20,33,.06);
+    --field:#f7efe2;
+  }
+  @media (prefers-color-scheme:dark){:root:not([data-theme=&quot;light&quot;]){
+    --ground:#141011;--panel:#1e1819;--panel-edge:#312527;
+    --ink:#efe7df;--ink-soft:#a9948d;
+    --maroon:#c69aa1;--gold:#c2a063;--gold-soft:#d9c091;
+    --hairline:#2f2528;--plate:#221b1c;--plate-alt:#282022;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 38px rgba(0,0,0,.55);
+    --field:#221b1c;
+  }}
+  :root[data-theme=&quot;dark&quot;]{
+    --ground:#141011;--panel:#1e1819;--panel-edge:#312527;
+    --ink:#efe7df;--ink-soft:#a9948d;
+    --maroon:#c69aa1;--gold:#c2a063;--gold-soft:#d9c091;
+    --hairline:#2f2528;--plate:#221b1c;--plate-alt:#282022;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 14px 38px rgba(0,0,0,.55);
+    --field:#221b1c;
+  }
+
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ground);color:var(--ink);
+    font-family:&quot;Jost&quot;,system-ui,sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1280px;margin:0 auto;padding:clamp(20px,4vw,44px) clamp(14px,3vw,32px) 70px}
+
+  header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;
+    border-bottom:1px solid var(--hairline);padding-bottom:18px;margin-bottom:24px}
+  .brand{font-family:&quot;Cinzel&quot;,serif;font-weight:600;letter-spacing:.34em;
+    font-size:13px;color:var(--maroon);margin:0 0 6px .34em}
+  h1{font-family:&quot;Cormorant Garamond&quot;,serif;font-weight:500;
+    font-size:clamp(26px,4vw,40px);margin:0;line-height:1.05}
+  .sub{color:var(--ink-soft);font-size:13.5px;max-width:46ch;margin:0}
+
+  /* controls */
+  .board{display:grid;grid-template-columns:300px 1fr;gap:22px;align-items:start}
+  @media (max-width:840px){.board{grid-template-columns:1fr}}
+
+  .panel{background:var(--panel);border:1px solid var(--panel-edge);border-radius:3px;
+    box-shadow:var(--shadow);padding:18px}
+  .panel + .panel{margin-top:16px}
+  .side{position:sticky;top:16px}
+  @media (max-width:840px){.side{position:static}}
+
+  .plabel{font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);
+    margin:0 0 10px;display:block}
+  textarea{width:100%;min-height:150px;resize:vertical;background:var(--field);
+    border:1px solid var(--hairline);border-radius:3px;padding:11px 12px;color:var(--ink);
+    font-family:&quot;Jost&quot;,sans-serif;font-size:14px;line-height:1.9;outline:none}
+  textarea:focus{border-color:var(--gold)}
+  .fine{font-size:11.5px;color:var(--ink-soft);margin:8px 0 0}
+
+  .ctl{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:14px 0 0}
+  .ctl:first-of-type{margin-top:0}
+  .ctl label{font-size:13px;color:var(--ink)}
+  .val{font-variant-numeric:tabular-nums;color:var(--maroon);font-size:12.5px;min-width:44px;text-align:right}
+  input[type=range]{flex:1;accent-color:var(--maroon)}
+  .seg{display:inline-flex;border:1px solid var(--hairline);border-radius:20px;overflow:hidden}
+  .seg button{border:none;background:transparent;color:var(--ink-soft);
+    font:inherit;font-size:12px;padding:5px 12px;cursor:pointer}
+  .seg button[aria-pressed=true]{background:var(--maroon);color:#fff}
+  :root[data-theme=&quot;dark&quot;] .seg button[aria-pressed=true],
+  :root:not([data-theme=&quot;light&quot;]) .seg button[aria-pressed=true]{color:#1b1112}
+
+  .fonts-ctl{display:flex;flex-wrap:wrap;gap:7px;margin-top:2px}
+  .chip{font-size:11.5px;padding:5px 10px;border-radius:20px;cursor:pointer;
+    border:1px solid var(--gold-soft);color:var(--gold);background:transparent;user-select:none}
+  .chip[aria-pressed=true]{background:var(--maroon);border-color:var(--maroon);color:#fff}
+  :root[data-theme=&quot;dark&quot;] .chip[aria-pressed=true],
+  :root:not([data-theme=&quot;light&quot;]) .chip[aria-pressed=true]{color:#1b1112}
+
+  /* matrix */
+  .matrix-wrap{overflow-x:auto;border:1px solid var(--panel-edge);border-radius:3px;
+    box-shadow:var(--shadow);background:var(--panel)}
+  table{border-collapse:collapse;width:100%;min-width:520px}
+  th,td{border-bottom:1px solid var(--hairline);border-right:1px solid var(--hairline);
+    padding:0;vertical-align:middle}
+  th:last-child,td:last-child{border-right:none}
+  thead th{position:sticky;top:0;z-index:3;background:var(--panel);
+    text-align:center;padding:12px 14px;font-weight:400}
+  thead th .stxt{font-size:12px;color:var(--ink);font-weight:500}
+  thead th .snote{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-top:3px}
+  .rowhead{position:sticky;left:0;z-index:2;background:var(--panel);
+    text-align:left;padding:14px 16px;min-width:150px;border-right:1px solid var(--panel-edge)}
+  thead th.corner{position:sticky;left:0;z-index:4;background:var(--panel);text-align:left;
+    border-right:1px solid var(--panel-edge)}
+  .corner .plabel{margin:0}
+  .fname{font-family:&quot;Cormorant Garamond&quot;,serif;font-size:18px;font-weight:600;color:var(--ink);display:block}
+  .ftag{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-top:2px}
+  td.cell{text-align:center;padding:16px 18px;background:var(--plate)}
+  tbody tr:nth-child(even) td.cell{background:var(--plate-alt)}
+  .samp{color:var(--maroon);line-height:1.1;word-break:break-word;
+    text-shadow:0 1px 0 rgba(255,255,255,.5);display:inline-block}
+  :root[data-theme=&quot;dark&quot;] .samp,
+  :root:not([data-theme=&quot;light&quot;]) .samp{text-shadow:0 1px 0 rgba(0,0,0,.6)}
+  .empty{color:var(--ink-soft);font-style:italic;font-family:&quot;Jost&quot;,sans-serif;font-size:13px;
+    text-shadow:none;opacity:.7}
+
+  footer{margin-top:30px;text-align:center;color:var(--ink-soft);
+    font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+  footer .dot{color:var(--gold);margin:0 7px}
+
+  @media (max-width:640px){
+    .wrap{padding:16px 12px 50px}
+    header{gap:8px}
+    table{min-width:0}
+    .rowhead{min-width:104px;padding:10px 10px}
+    thead th.corner{min-width:104px}
+    .fname{font-size:14px}
+    td.cell{padding:10px 12px}
+    thead th{padding:9px 10px}
+    .panel{padding:14px}
+    textarea{min-height:120px;line-height:1.7}
+    .hint,.fine{font-size:11px}
+  }
+  @media print{
+    .side{display:none}.board{grid-template-columns:1fr}
+    body{background:#fff}.matrix-wrap{box-shadow:none}
+  }
+</style>
+
+<div class=&quot;wrap&quot;>
+  <header>
+    <div>
+      <p class=&quot;brand&quot;>RÉIA</p>
+      <h1>Engraving Workbench</h1>
+    </div>
+    <p class=&quot;sub&quot;>Enter one sample per line. Every sample is rendered across all ten engraving faces so you can compare and choose.</p>
+  </header>
+
+  <div class=&quot;board&quot;>
+    <aside class=&quot;side&quot;>
+      <div class=&quot;panel&quot;>
+        <label class=&quot;plabel&quot; for=&quot;samples&quot;>Samples — one per line</label>
+        <textarea id=&quot;samples&quot; spellcheck=&quot;false&quot;>R ❤️ D
+Réia Diamonds
+04/03/2025
+Aarohi &amp;amp; Kabir
+Forever</textarea>
+        <p class=&quot;fine&quot;>Names, initials, dates, short messages — add or remove lines freely.</p>
+      </div>
+
+      <div class=&quot;panel&quot;>
+        <label class=&quot;plabel&quot;>Display</label>
+        <div class=&quot;ctl&quot;>
+          <label for=&quot;size&quot;>Sample size</label>
+          <input id=&quot;size&quot; type=&quot;range&quot; min=&quot;20&quot; max=&quot;72&quot; value=&quot;38&quot;>
+          <span class=&quot;val&quot; id=&quot;sizeval&quot;>38px</span>
+        </div>
+        <div class=&quot;ctl&quot;>
+          <label>Plate tone</label>
+          <div class=&quot;seg&quot; id=&quot;tone&quot; role=&quot;group&quot; aria-label=&quot;Plate tone&quot;>
+            <button data-tone=&quot;warm&quot; aria-pressed=&quot;true&quot;>Warm</button>
+            <button data-tone=&quot;cool&quot; aria-pressed=&quot;false&quot;>Cool</button>
+            <button data-tone=&quot;dark&quot; aria-pressed=&quot;false&quot;>Dark</button>
+          </div>
+        </div>
+      </div>
+
+      <div class=&quot;panel&quot;>
+        <label class=&quot;plabel&quot;>Fonts shown</label>
+        <div class=&quot;fonts-ctl&quot; id=&quot;fontchips&quot;></div>
+      </div>
+    </aside>
+
+    <main class=&quot;matrix-wrap&quot;>
+      <table id=&quot;matrix&quot;>
+        <thead><tr id=&quot;headrow&quot;></tr></thead>
+        <tbody id=&quot;body&quot;></tbody>
+      </table>
+    </main>
+  </div>
+
+  <footer>RÉIA Fine Jewellery <span class=&quot;dot&quot;>◆</span> Custom Engraving Studio <span class=&quot;dot&quot;>◆</span> Comparison Workbench</footer>
+</div>
+
+<script>
+  const FONTS = [
+    {cls:'&quot;Great Vibes&quot;,cursive',       name:&quot;Great Vibes&quot;,       tag:&quot;Script&quot;,       s:1.28},
+    {cls:'&quot;Allura&quot;,cursive',            name:&quot;Allura&quot;,            tag:&quot;Fine Script&quot;,  s:1.35},
+    {cls:'&quot;Pinyon Script&quot;,cursive',     name:&quot;Pinyon Script&quot;,     tag:&quot;Formal&quot;,       s:1.22},
+    {cls:'&quot;Tangerine&quot;,cursive',         name:&quot;Tangerine&quot;,         tag:&quot;Swash&quot;,        s:1.62, w:700},
+    {cls:'&quot;Cormorant Garamond&quot;,serif',  name:&quot;Cormorant Italic&quot;,  tag:&quot;Serif&quot;,        s:1.05, i:true},
+    {cls:'&quot;Cinzel&quot;,serif',              name:&quot;Cinzel&quot;,            tag:&quot;Roman Caps&quot;,   s:.8,  ls:&quot;.04em&quot;},
+    {cls:'&quot;Playfair Display&quot;,serif',    name:&quot;Playfair Display&quot;,  tag:&quot;Serif&quot;,        s:.94},
+    {cls:'&quot;Josefin Sans&quot;,sans-serif',   name:&quot;Josefin Sans&quot;,      tag:&quot;Modern&quot;,       s:.82, w:300, ls:&quot;.07em&quot;},
+    {cls:'&quot;Cinzel Decorative&quot;,serif',   name:&quot;Cinzel Decorative&quot;, tag:&quot;Ornate&quot;,       s:.76, w:700, ls:&quot;.03em&quot;},
+    {cls:'&quot;Sacramento&quot;,cursive',        name:&quot;Sacramento&quot;,        tag:&quot;Monoline&quot;,     s:1.3},
+    {cls:'&quot;Alex Brush&quot;,cursive',        name:&quot;Alex Brush&quot;,        tag:&quot;Brush&quot;,        s:1.32},
+    {cls:'&quot;Parisienne&quot;,cursive',        name:&quot;Parisienne&quot;,        tag:&quot;Casual&quot;,       s:1.2},
+    {cls:'&quot;Marcellus&quot;,serif',           name:&quot;Marcellus&quot;,         tag:&quot;Refined Caps&quot;, s:.82, ls:&quot;.03em&quot;},
+    {cls:'&quot;Italiana&quot;,serif',            name:&quot;Italiana&quot;,          tag:&quot;Fashion Serif&quot;,s:.9},
+    {cls:'&quot;Petit Formal Script&quot;,cursive',name:&quot;Petit Formal Script&quot;,tag:&quot;Fine Script&quot;, s:1.1},
+  ];
+  const TONES = {
+    warm:{plate:&quot;var(--plate)&quot;,alt:&quot;var(--plate-alt)&quot;},
+    cool:{plate:&quot;#e9edf0&quot;,alt:&quot;#eef1f4&quot;},
+    dark:{plate:&quot;#241b1d&quot;,alt:&quot;#2b2022&quot;},
+  };
+
+  const $ = id => document.getElementById(id);
+  const state = { size:38, tone:&quot;warm&quot;, hidden:new Set() };
+
+  // font chips
+  const chipWrap = $(&quot;fontchips&quot;);
+  FONTS.forEach((f,i)=>{
+    const b=document.createElement(&quot;button&quot;);
+    b.className=&quot;chip&quot;;b.textContent=f.name;b.setAttribute(&quot;aria-pressed&quot;,&quot;true&quot;);
+    b.onclick=()=>{ state.hidden.has(i)?state.hidden.delete(i):state.hidden.add(i);
+      b.setAttribute(&quot;aria-pressed&quot;, state.hidden.has(i)?&quot;false&quot;:&quot;true&quot;); build(); };
+    chipWrap.appendChild(b);
+  });
+
+  // controls
+  $(&quot;size&quot;).addEventListener(&quot;input&quot;,e=>{state.size=+e.target.value;$(&quot;sizeval&quot;).textContent=state.size+&quot;px&quot;;applySize()});
+  $(&quot;tone&quot;).addEventListener(&quot;click&quot;,e=>{
+    const btn=e.target.closest(&quot;button&quot;); if(!btn)return;
+    state.tone=btn.dataset.tone;
+    [...$(&quot;tone&quot;).children].forEach(b=>b.setAttribute(&quot;aria-pressed&quot;, b===btn?&quot;true&quot;:&quot;false&quot;));
+    applyTone();
+  });
+  $(&quot;samples&quot;).addEventListener(&quot;input&quot;,build);
+
+  function samples(){
+    return $(&quot;samples&quot;).value.split(&quot;\n&quot;).map(s=>s.trim()).filter(Boolean);
+  }
+
+  function build(){
+    const S=samples();
+    const head=$(&quot;headrow&quot;); const body=$(&quot;body&quot;);
+    head.innerHTML='<th class=&quot;corner&quot;><span class=&quot;plabel&quot;>Font \\ Sample</span></th>';
+    if(S.length===0){
+      head.innerHTML+='<th><span class=&quot;stxt&quot;>—</span></th>';
+    }
+    S.forEach(txt=>{
+      const th=document.createElement(&quot;th&quot;);
+      th.innerHTML='<span class=&quot;stxt&quot;></span>';
+      th.querySelector(&quot;.stxt&quot;).textContent=txt;
+      head.appendChild(th);
+    });
+    body.innerHTML=&quot;&quot;;
+    FONTS.forEach((f,i)=>{
+      if(state.hidden.has(i))return;
+      const tr=document.createElement(&quot;tr&quot;);
+      const rh=document.createElement(&quot;th&quot;);
+      rh.className=&quot;rowhead&quot;;
+      rh.innerHTML='<span class=&quot;fname&quot;></span><span class=&quot;ftag&quot;>'+f.tag+'</span>';
+      rh.querySelector(&quot;.fname&quot;).textContent=f.name;
+      tr.appendChild(rh);
+      const cols = S.length? S : [&quot;&quot;];
+      cols.forEach(txt=>{
+        const td=document.createElement(&quot;td&quot;); td.className=&quot;cell&quot;;
+        if(!txt){ td.innerHTML='<span class=&quot;empty&quot;>add a sample…</span>'; }
+        else{
+          const span=document.createElement(&quot;span&quot;);
+          span.className=&quot;samp&quot;;
+          span.style.fontFamily=f.cls;
+          span.dataset.scale=f.s;
+          if(f.w)span.style.fontWeight=f.w;
+          if(f.i)span.style.fontStyle=&quot;italic&quot;;
+          if(f.ls)span.style.letterSpacing=f.ls;
+          span.textContent=txt;
+          td.appendChild(span);
+        }
+        tr.appendChild(td);
+      });
+      body.appendChild(tr);
+    });
+    applySize();applyTone();
+  }
+  function applySize(){
+    document.querySelectorAll(&quot;.samp&quot;).forEach(s=>{
+      s.style.fontSize=(state.size*parseFloat(s.dataset.scale))+&quot;px&quot;;
+    });
+  }
+  function applyTone(){
+    const t=TONES[state.tone];
+    document.querySelectorAll(&quot;tbody tr&quot;).forEach((tr,r)=>{
+      tr.querySelectorAll(&quot;td.cell&quot;).forEach(td=>{
+        td.style.background = (r%2===1)? t.alt : t.plate;
+      });
+      tr.querySelectorAll(&quot;.samp&quot;).forEach(s=>{
+        s.style.color = state.tone===&quot;dark&quot; ? &quot;#d6b3b9&quot; : &quot;var(--maroon)&quot;;
+        s.style.textShadow = state.tone===&quot;dark&quot; ? &quot;0 1px 0 rgba(0,0,0,.6)&quot; : &quot;0 1px 0 rgba(255,255,255,.5)&quot;;
+      });
+    });
+  }
+  build();
+</script>
+"></iframe>
+</main>
+
+<script>
+  const tabs={book:document.getElementById("tab-book"),bench:document.getElementById("tab-bench")};
+  const frames={book:document.getElementById("frame-book"),bench:document.getElementById("frame-bench")};
+  function show(v){
+    for(const k in frames){
+      const on=k===v;
+      frames[k].hidden=!on;
+      tabs[k].setAttribute("aria-selected",on?"true":"false");
+    }
+    try{history.replaceState(null,"","#"+v);}catch(e){}
+  }
+  tabs.book.onclick=()=>show("book");
+  tabs.bench.onclick=()=>show("bench");
+  if(location.hash==="#bench")show("bench");
+</script>
