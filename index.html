@@ -522,6 +522,22 @@
   .corner .plabel{margin:0}
   .fname{font-family:&quot;Cormorant Garamond&quot;,serif;font-size:18px;font-weight:600;color:var(--ink);display:block}
   .ftag{font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-top:2px}
+  .rowdl{
+    margin-top:8px;font:inherit;font-size:10.5px;letter-spacing:.04em;cursor:pointer;
+    border:1px solid var(--gold-soft);background:transparent;color:var(--gold);
+    border-radius:16px;padding:4px 10px;transition:background .15s,color .15s,border-color .15s;
+  }
+  .rowdl:hover{border-color:var(--gold)}
+  .rowdl:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .dlbtn{
+    width:100%;font:inherit;font-size:13px;cursor:pointer;
+    background:var(--maroon);color:#fff;border:1px solid var(--maroon);
+    border-radius:22px;padding:11px 14px;transition:opacity .15s;
+  }
+  .dlbtn:hover{opacity:.9}
+  .dlbtn:disabled{opacity:.5;cursor:default}
+  :root[data-theme=&quot;dark&quot;] .dlbtn,
+  :root:not([data-theme=&quot;light&quot;]) .dlbtn{color:#1b1112}
   td.cell{text-align:center;padding:16px 18px;background:var(--plate)}
   tbody tr:nth-child(even) td.cell{background:var(--plate-alt)}
   .samp{color:var(--maroon);line-height:1.1;word-break:break-word;display:inline-block}
@@ -593,6 +609,12 @@ Forever</textarea>
         <label class=&quot;plabel&quot;>Fonts shown</label>
         <div class=&quot;fonts-ctl&quot; id=&quot;fontchips&quot;></div>
       </div>
+
+      <div class=&quot;panel&quot;>
+        <label class=&quot;plabel&quot;>Save</label>
+        <button type=&quot;button&quot; class=&quot;dlbtn&quot; id=&quot;dlsheet&quot;>⬇ Download comparison (PNG)</button>
+        <p class=&quot;fine&quot;>Saves the full table as one image. You can also save a single font using the ⬇ on each row.</p>
+      </div>
     </aside>
 
     <main class=&quot;matrix-wrap&quot;>
@@ -606,6 +628,7 @@ Forever</textarea>
   <footer>RÉIA Fine Jewellery <span class=&quot;dot&quot;>◆</span> Custom Engraving Studio <span class=&quot;dot&quot;>◆</span> Comparison Workbench</footer>
 </div>
 
+<script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js&quot;></script>
 <script>
   const FONTS = [
     {cls:'&quot;Great Vibes&quot;,cursive',       name:&quot;Great Vibes&quot;,       tag:&quot;Script&quot;,       s:1.28},
@@ -676,8 +699,10 @@ Forever</textarea>
       const tr=document.createElement(&quot;tr&quot;);
       const rh=document.createElement(&quot;th&quot;);
       rh.className=&quot;rowhead&quot;;
-      rh.innerHTML='<span class=&quot;fname&quot;></span><span class=&quot;ftag&quot;>'+f.tag+'</span>';
+      rh.innerHTML='<span class=&quot;fname&quot;></span><span class=&quot;ftag&quot;>'+f.tag+'</span>'+
+        '<button type=&quot;button&quot; class=&quot;rowdl&quot;>⬇ Save PNG</button>';
       rh.querySelector(&quot;.fname&quot;).textContent=f.name;
+      rh.querySelector(&quot;.rowdl&quot;).addEventListener(&quot;click&quot;,()=>saveRow(i));
       tr.appendChild(rh);
       const cols = S.length? S : [&quot;&quot;];
       cols.forEach(txt=>{
@@ -716,6 +741,50 @@ Forever</textarea>
       });
     });
   }
+  // ---- downloads ----
+  function triggerDownload(blob,name){
+    const a=document.createElement(&quot;a&quot;);
+    a.href=URL.createObjectURL(blob);
+    a.download=name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href),3000);
+  }
+
+  // Save one font with all current samples, stacked, as a PNG.
+  function saveRow(i){
+    const f=FONTS[i], S=samples();
+    if(!S.length) return;
+    const SC=3, W=1100*SC, pad=70*SC;
+    const size=state.size*f.s*SC;
+    const font=(f.i?&quot;italic &quot;:&quot;&quot;)+(f.w?f.w+&quot; &quot;:&quot;&quot;)+size+&quot;px &quot;+f.cls;
+    const ls=f.ls?parseFloat(f.ls)*size+&quot;px&quot;:&quot;0px&quot;;
+    let H=pad*2 + S.length*size*1.18 + (S.length-1)*size*0.16;
+    const c=document.createElement(&quot;canvas&quot;);
+    c.width=W; c.height=Math.round(H);
+    const ctx=c.getContext(&quot;2d&quot;);
+    ctx.fillStyle=&quot;#f6efe2&quot;; ctx.fillRect(0,0,W,c.height);
+    ctx.fillStyle=&quot;#6d1f30&quot;; ctx.textAlign=&quot;center&quot;; ctx.textBaseline=&quot;alphabetic&quot;;
+    document.fonts.ready.then(()=>{
+      let y=pad;
+      S.forEach((txt,idx)=>{
+        ctx.font=font; try{ctx.letterSpacing=ls;}catch(e){}
+        y+=size; ctx.fillText(txt,W/2,y); y+=size*0.34;
+      });
+      c.toBlob(b=>triggerDownload(b,&quot;REIA-&quot;+f.name.replace(/[^a-z0-9]+/gi,&quot;-&quot;)+&quot;.png&quot;),&quot;image/png&quot;);
+    });
+  }
+
+  // Save the whole comparison table as one PNG.
+  $(&quot;dlsheet&quot;).addEventListener(&quot;click&quot;,()=>{
+    const btn=$(&quot;dlsheet&quot;), table=$(&quot;matrix&quot;);
+    if(typeof html2canvas!==&quot;function&quot;){ alert(&quot;Image library still loading — try again in a moment.&quot;); return; }
+    btn.disabled=true; const label=btn.textContent; btn.textContent=&quot;Rendering…&quot;;
+    const bg=getComputedStyle(document.body).backgroundColor;
+    document.fonts.ready.then(()=>html2canvas(table,{backgroundColor:bg,scale:2,windowWidth:table.scrollWidth}))
+      .then(canvas=>canvas.toBlob(b=>{ triggerDownload(b,&quot;REIA-font-comparison.png&quot;); btn.disabled=false; btn.textContent=label; },&quot;image/png&quot;))
+      .catch(()=>{ btn.disabled=false; btn.textContent=label; alert(&quot;Could not render the image. Try fewer samples/fonts.&quot;); });
+  });
+
   build();
 </script>
 "></iframe>
