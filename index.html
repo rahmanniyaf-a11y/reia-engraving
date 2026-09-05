@@ -502,6 +502,11 @@
   .selctl button{background:none;border:none;cursor:pointer;color:var(--gold);font:inherit;font-size:11px;padding:0}
   .selctl button:hover{text-decoration:underline}
   .fonts-ctl{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+  .fontlist{display:flex;flex-direction:column;gap:2px;margin-top:12px;max-height:340px;overflow-y:auto}
+  .fontlist label{display:flex;align-items:center;gap:9px;cursor:pointer;
+    font-size:13px;color:var(--ink);padding:5px 4px;border-radius:4px}
+  .fontlist label:hover{background:var(--field)}
+  .fontlist input{width:15px;height:15px;accent-color:var(--maroon);cursor:pointer;flex:none}
   .chip{font-size:11.5px;padding:5px 10px;border-radius:20px;cursor:pointer;
     border:1px solid var(--gold-soft);color:var(--gold);background:transparent;user-select:none}
   .chip[aria-pressed=true]{background:var(--maroon);border-color:var(--maroon);color:#fff}
@@ -590,9 +595,7 @@
         <label class=&quot;plabel&quot; for=&quot;samples&quot;>Samples — one per line</label>
         <textarea id=&quot;samples&quot; spellcheck=&quot;false&quot;>R ❤️ D
 Réia Diamonds
-04/03/2025
-Aarohi &amp;amp; Kabir
-Forever</textarea>
+04/03/2025</textarea>
         <p class=&quot;fine&quot;>Names, initials, dates, short messages — add or remove lines freely.</p>
       </div>
 
@@ -622,7 +625,7 @@ Forever</textarea>
             <button type=&quot;button&quot; id=&quot;selnone&quot;>None</button>
           </div>
         </div>
-        <div class=&quot;fonts-ctl&quot; id=&quot;fontchips&quot;></div>
+        <div class=&quot;fontlist&quot; id=&quot;fontchips&quot;></div>
       </div>
 
       <div class=&quot;panel&quot;>
@@ -675,18 +678,19 @@ Forever</textarea>
   const $ = id => document.getElementById(id);
   const state = { size:38, tone:&quot;warm&quot;, hidden:new Set() };
 
-  // font chips
+  // font checkbox list
   const chipWrap = $(&quot;fontchips&quot;);
   FONTS.forEach((f,i)=>{
-    const b=document.createElement(&quot;button&quot;);
-    b.className=&quot;chip&quot;;b.textContent=f.name;b.setAttribute(&quot;aria-pressed&quot;,&quot;true&quot;);
-    b.onclick=()=>{ state.hidden.has(i)?state.hidden.delete(i):state.hidden.add(i);
-      b.setAttribute(&quot;aria-pressed&quot;, state.hidden.has(i)?&quot;false&quot;:&quot;true&quot;); build(); };
-    chipWrap.appendChild(b);
+    const lab=document.createElement(&quot;label&quot;);
+    const cb=document.createElement(&quot;input&quot;); cb.type=&quot;checkbox&quot;; cb.checked=true;
+    cb.addEventListener(&quot;change&quot;,()=>{ cb.checked?state.hidden.delete(i):state.hidden.add(i); build(); });
+    const span=document.createElement(&quot;span&quot;); span.textContent=f.name;
+    lab.appendChild(cb); lab.appendChild(span);
+    chipWrap.appendChild(lab);
   });
 
   function syncChips(){
-    [...chipWrap.children].forEach((b,i)=>b.setAttribute(&quot;aria-pressed&quot;, state.hidden.has(i)?&quot;false&quot;:&quot;true&quot;));
+    [...chipWrap.querySelectorAll(&quot;input&quot;)].forEach((cb,i)=>cb.checked=!state.hidden.has(i));
   }
   $(&quot;selall&quot;).addEventListener(&quot;click&quot;,()=>{ state.hidden.clear(); syncChips(); build(); });
   $(&quot;selnone&quot;).addEventListener(&quot;click&quot;,()=>{ FONTS.forEach((_,i)=>state.hidden.add(i)); syncChips(); build(); });
