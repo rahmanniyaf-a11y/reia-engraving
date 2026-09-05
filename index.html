@@ -499,7 +499,18 @@
   :root:not([data-theme=&quot;light&quot;]) .dlbtn{color:#1b1112}
   .dlbtn.ghost{background:transparent;color:var(--gold);border-color:var(--gold-soft)}
   .dlbtn.ghost:hover{border-color:var(--gold);opacity:1}
+  .btnrow{display:flex;gap:8px}
+  .btnrow .dlbtn{width:auto;flex:1;padding:11px 10px;font-size:12.5px}
   .savefont{display:flex;gap:8px;margin-top:10px}
+  .flash{
+    position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);
+    background:var(--maroon);color:#fff;padding:11px 18px;border-radius:24px;
+    font-size:13px;box-shadow:0 8px 26px rgba(0,0,0,.28);
+    opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:50;max-width:90vw;text-align:center;
+  }
+  :root[data-theme=&quot;dark&quot;] .flash,
+  :root:not([data-theme=&quot;light&quot;]) .flash{color:#1b1112}
+  .flash.show{opacity:1;transform:translate(-50%,0)}
   .savefont select{
     flex:1;min-width:0;font:inherit;font-size:12.5px;color:var(--ink);
     background:var(--field);border:1px solid var(--hairline);border-radius:22px;
@@ -590,12 +601,16 @@ Réia Diamonds
             <button data-fmt=&quot;word&quot; aria-pressed=&quot;false&quot;>Word</button>
           </div>
         </div>
-        <button type=&quot;button&quot; class=&quot;dlbtn&quot; id=&quot;dlsheet&quot;>⬇ Download comparison</button>
+        <div class=&quot;btnrow&quot;>
+          <button type=&quot;button&quot; class=&quot;dlbtn&quot; id=&quot;dlsheet&quot;>⬇ Download comparison</button>
+          <button type=&quot;button&quot; class=&quot;dlbtn ghost&quot; id=&quot;copysheet&quot;>⧉ Copy image</button>
+        </div>
         <div class=&quot;savefont&quot;>
           <select id=&quot;dlfont&quot; aria-label=&quot;Choose a font to save&quot;></select>
-          <button type=&quot;button&quot; class=&quot;dlbtn ghost&quot; id=&quot;dlone&quot;>⬇ Save this font</button>
+          <button type=&quot;button&quot; class=&quot;dlbtn ghost&quot; id=&quot;dlone&quot;>⬇ Save</button>
+          <button type=&quot;button&quot; class=&quot;dlbtn ghost&quot; id=&quot;copyone&quot;>⧉ Copy</button>
         </div>
-        <p class=&quot;fine&quot;>Download the whole table as one image, or pick a single font to save on its own.</p>
+        <p class=&quot;fine&quot;>Download as a file, or Copy the image to paste straight into WhatsApp, email or a message.</p>
       </div>
     </aside>
 
@@ -769,8 +784,27 @@ Réia Diamonds
     }
   }
 
-  // Save one font with all current samples, stacked, as a PNG.
-  function saveRow(i){
+  // Copy a rendered canvas to the clipboard as an image (paste into WhatsApp/email).
+  function copyCanvas(canvas){
+    canvas.toBlob(async b=>{
+      try{
+        await navigator.clipboard.write([new ClipboardItem({&quot;image/png&quot;:b})]);
+        flash(&quot;Image copied — paste it into WhatsApp, email or a message&quot;);
+      }catch(e){
+        flash(&quot;Copy isn't allowed here — use Download instead&quot;);
+      }
+    },&quot;image/png&quot;);
+  }
+  let flashTimer;
+  function flash(msg){
+    let el=$(&quot;flash&quot;);
+    if(!el){ el=document.createElement(&quot;div&quot;); el.id=&quot;flash&quot;; el.className=&quot;flash&quot;; document.body.appendChild(el); }
+    el.textContent=msg; el.classList.add(&quot;show&quot;);
+    clearTimeout(flashTimer); flashTimer=setTimeout(()=>el.classList.remove(&quot;show&quot;),2600);
+  }
+
+  // Build a canvas of one font with all current samples, then run action(canvas, base).
+  function withRowCanvas(i, action){
     const f=FONTS[i], S=samples();
     if(!S.length) return;
     const SC=3, W=1100*SC, pad=70*SC;
@@ -785,24 +819,25 @@ Réia Diamonds
     ctx.fillStyle=&quot;#6d1f30&quot;; ctx.textAlign=&quot;center&quot;; ctx.textBaseline=&quot;alphabetic&quot;;
     document.fonts.ready.then(()=>{
       let y=pad;
-      S.forEach((txt,idx)=>{
-        ctx.font=font; try{ctx.letterSpacing=ls;}catch(e){}
-        y+=size; ctx.fillText(txt,W/2,y); y+=size*0.34;
-      });
-      canvasToFile(c,&quot;REIA-&quot;+f.name.replace(/[^a-z0-9]+/gi,&quot;-&quot;));
+      S.forEach(txt=>{ ctx.font=font; try{ctx.letterSpacing=ls;}catch(e){} y+=size; ctx.fillText(txt,W/2,y); y+=size*0.34; });
+      action(c,&quot;REIA-&quot;+f.name.replace(/[^a-z0-9]+/gi,&quot;-&quot;));
     });
   }
+  function saveRow(i){ withRowCanvas(i,(c,base)=>canvasToFile(c,base)); }
+  function copyRow(i){ withRowCanvas(i,c=>copyCanvas(c)); }
 
-  // Save the whole comparison table as one PNG.
-  $(&quot;dlsheet&quot;).addEventListener(&quot;click&quot;,()=>{
-    const btn=$(&quot;dlsheet&quot;), table=$(&quot;matrix&quot;);
+  // Build a canvas of the whole comparison table, then run action(canvas).
+  function withSheetCanvas(btn, action){
     if(typeof html2canvas!==&quot;function&quot;){ alert(&quot;Image library still loading — try again in a moment.&quot;); return; }
     btn.disabled=true; const label=btn.textContent; btn.textContent=&quot;Rendering…&quot;;
-    const bg=getComputedStyle(document.body).backgroundColor;
+    const table=$(&quot;matrix&quot;); const bg=getComputedStyle(document.body).backgroundColor;
     document.fonts.ready.then(()=>html2canvas(table,{backgroundColor:bg,scale:2,windowWidth:table.scrollWidth}))
-      .then(canvas=>{ canvasToFile(canvas,&quot;REIA-font-comparison&quot;); btn.disabled=false; btn.textContent=label; })
+      .then(canvas=>{ action(canvas); btn.disabled=false; btn.textContent=label; })
       .catch(()=>{ btn.disabled=false; btn.textContent=label; alert(&quot;Could not render the file. Try fewer samples/fonts.&quot;); });
-  });
+  }
+  $(&quot;dlsheet&quot;).addEventListener(&quot;click&quot;,()=>withSheetCanvas($(&quot;dlsheet&quot;),c=>canvasToFile(c,&quot;REIA-font-comparison&quot;)));
+  $(&quot;copysheet&quot;).addEventListener(&quot;click&quot;,()=>withSheetCanvas($(&quot;copysheet&quot;),c=>copyCanvas(c)));
+  $(&quot;copyone&quot;).addEventListener(&quot;click&quot;,()=>copyRow(+dlfont.value));
 
   build();
 </script>
