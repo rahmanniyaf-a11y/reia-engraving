@@ -40,6 +40,22 @@
   h1{font-family:"Cormorant Garamond",serif;font-weight:500;
     font-size:clamp(26px,4vw,40px);margin:0;line-height:1.05}
   .sub{color:var(--ink-soft);font-size:13.5px;max-width:46ch;margin:0}
+  .masthead{display:block;border:none;text-align:center;padding-bottom:8px;margin-bottom:30px}
+  .eyebrow{font-family:"Jost",sans-serif;font-size:10.5px;font-weight:500;
+    letter-spacing:.32em;text-transform:uppercase;color:var(--gold);margin:0 0 16px;padding-left:.32em}
+  .masthead h1{font-family:"Cormorant Garamond",serif;font-weight:500;
+    font-size:clamp(30px,5vw,50px);line-height:1.03;margin:0;letter-spacing:-.015em;text-wrap:balance}
+  .masthead h1 em{font-style:italic;color:var(--maroon)}
+  .lede{max-width:52ch;margin:16px auto 0;color:var(--ink-soft);
+    font-size:clamp(13.5px,1.5vw,16px);line-height:1.65}
+  .notes{margin-top:44px;background:var(--panel);border:1px solid var(--panel-edge);
+    border-radius:3px;padding:clamp(22px,3.5vw,34px);box-shadow:var(--shadow)}
+  .notes h2{font-family:"Cinzel",serif;font-weight:600;font-size:13px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--maroon);margin:0 0 18px}
+  .notes ul{margin:0;padding:0;list-style:none;display:grid;gap:14px}
+  .notes li{display:flex;gap:12px;font-size:14.5px;color:var(--ink);max-width:70ch}
+  .notes li::before{content:"◆";color:var(--gold);font-size:10px;line-height:1.7;flex:none}
+  .notes b{color:var(--maroon);font-weight:600}
 
   /* controls */
   .board{display:grid;grid-template-columns:300px 1fr;gap:22px;align-items:start}
@@ -166,12 +182,10 @@
 </style>
 
 <div class="wrap">
-  <header>
-    <div>
-      <p class="brand">RÉIA</p>
-      <h1>Engraving Workbench</h1>
-    </div>
-    <p class="sub">Enter one sample per line to see it rendered in every engraving font — compare side by side and choose the right one.</p>
+  <header class="masthead">
+    <p class="eyebrow">Fine Jewellery · Custom Engraving</p>
+    <h1>The Engraving <em>Type Book</em></h1>
+    <p class="lede">Personalising fine jewellery — names, initials, dates and short inscriptions, incised inside a band or across a pendant. Enter your text below to preview every style.</p>
   </header>
 
   <div class="board">
@@ -234,7 +248,17 @@ Réia Diamonds
     </main>
   </div>
 
-  <footer>RÉIA Fine Jewellery <span class="dot">◆</span> Custom Engraving Studio <span class="dot">◆</span> Comparison Workbench</footer>
+  <section class="notes">
+    <h2>Choosing for the piece</h2>
+    <ul>
+      <li><span><b>Inside a ring band?</b> Choose a monoline or Roman-capital style — Sacramento or Cinzel. Fine hairline scripts can break or blur in a 1.5&nbsp;mm channel.</span></li>
+      <li><span><b>Very small area or curved surface?</b> Uppercase serifs (Cinzel, Cinzel Decorative) hold their shape best when the letters are tiny.</span></li>
+      <li><span><b>Names &amp; sentiments on pendants and bangles?</b> The flowing scripts — Great Vibes, Allura, Pinyon — read as romantic and personal.</span></li>
+      <li><span><b>Always preview at true size.</b> Legibility changes below roughly 3&nbsp;mm letter height, so we approve every engraving at actual scale before cutting.</span></li>
+    </ul>
+  </section>
+
+  <footer>Custom Engraving <span class="dot">◆</span> RÉIA Fine Jewellery <span class="dot">◆</span> Ask your consultant for a sample</footer>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
