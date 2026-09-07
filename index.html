@@ -97,6 +97,19 @@
     font-size:13px;color:var(--ink);padding:5px 4px;border-radius:4px}
   .fontlist label:hover{background:var(--field)}
   .fontlist input{width:15px;height:15px;accent-color:var(--maroon);cursor:pointer;flex:none}
+  .fontlist label span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .fontlist .rm{width:auto;height:auto;flex:none;border:none;background:none;color:var(--ink-soft);
+    cursor:pointer;font-size:14px;line-height:1;padding:0 2px;accent-color:initial}
+  .fontlist .rm:hover{color:var(--maroon)}
+  .addfont{display:flex;gap:8px;margin-top:12px}
+  .addfont input{flex:1;min-width:0;font:inherit;font-size:12.5px;color:var(--ink);
+    background:var(--field);border:1px solid var(--hairline);border-radius:20px;padding:8px 12px;outline:none}
+  .addfont input:focus{border-color:var(--gold)}
+  .addfont button{flex:none;font:inherit;font-size:12.5px;cursor:pointer;white-space:nowrap;
+    background:var(--maroon);color:#fff;border:1px solid var(--maroon);border-radius:20px;padding:8px 14px}
+  .addfont button:hover{opacity:.9}
+  :root[data-theme="dark"] .addfont button,
+  :root:not([data-theme="light"]) .addfont button{color:#1b1112}
   .chip{font-size:11.5px;padding:5px 10px;border-radius:20px;cursor:pointer;
     border:1px solid var(--gold-soft);color:var(--gold);background:transparent;user-select:none}
   .chip[aria-pressed=true]{background:var(--maroon);border-color:var(--maroon);color:#fff}
@@ -220,6 +233,11 @@ Réia Diamonds
           </div>
         </div>
         <div class="fontlist" id="fontchips"></div>
+        <div class="addfont">
+          <input id="newfont" type="text" placeholder="Add a font a customer needs…" autocomplete="off">
+          <button type="button" id="addfont">+ Add</button>
+        </div>
+        <p class="fine">Type any Google Font name (e.g. Dancing Script). It's added to the collection and saved on this device. Browse names at fonts.google.com.</p>
       </div>
 
       <div class="panel">
@@ -288,24 +306,68 @@ Réia Diamonds
   };
 
   const $ = id => document.getElementById(id);
-  const state = { size:20, tone:"warm", fmt:"png", hidden:new Set() };
+  const state = { size:20, tone:"warm", fmt:"png", hidden:new Set() }; // hidden holds font NAMES
+
+  // ---- custom fonts (added by staff, saved on this device) ----
+  const LS_KEY="reia_custom_fonts";
+  function loadCustom(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)||"[]"); }catch(e){ return []; } }
+  function saveCustom(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(FONTS.filter(f=>f.custom).map(f=>f.name))); }catch(e){} }
+  function loadFontCss(name){
+    const id="gf-"+name.replace(/[^a-z0-9]+/gi,"-");
+    if(document.getElementById(id)) return;
+    const l=document.createElement("link"); l.id=id; l.rel="stylesheet";
+    l.href="https://fonts.googleapis.com/css2?family="+encodeURIComponent(name).replace(/%20/g,"+")+":ital,wght@0,400;0,600;1,400&display=swap";
+    document.head.appendChild(l);
+  }
+  function addFont(raw){
+    const name=raw.trim().replace(/\s+/g," ");
+    if(!name) return;
+    if(FONTS.some(f=>f.name.toLowerCase()===name.toLowerCase())){ flash("“"+name+"” is already in the collection"); return; }
+    loadFontCss(name);
+    FONTS.push({cls:'"'+name+'", serif', name:name, tag:"Custom", s:1.0, custom:true});
+    saveCustom(); renderFontList(); renderPicker(); build();
+    if(document.fonts && document.fonts.load){
+      document.fonts.load('24px "'+name+'"').then(()=>{ build(); }).catch(()=>{});
+      setTimeout(()=>{ if(document.fonts.check && !document.fonts.check('24px "'+name+'"')) flash("Added “"+name+"”. If it looks plain, check the exact Google Fonts name."); }, 1500);
+    }
+  }
+  function removeFont(name){
+    const i=FONTS.findIndex(f=>f.name===name && f.custom);
+    if(i<0) return;
+    FONTS.splice(i,1); state.hidden.delete(name);
+    saveCustom(); renderFontList(); renderPicker(); build();
+  }
 
   // font checkbox list
   const chipWrap = $("fontchips");
-  FONTS.forEach((f,i)=>{
-    const lab=document.createElement("label");
-    const cb=document.createElement("input"); cb.type="checkbox"; cb.checked=true;
-    cb.addEventListener("change",()=>{ cb.checked?state.hidden.delete(i):state.hidden.add(i); build(); });
-    const span=document.createElement("span"); span.textContent=f.name;
-    lab.appendChild(cb); lab.appendChild(span);
-    chipWrap.appendChild(lab);
-  });
-
-  function syncChips(){
-    [...chipWrap.querySelectorAll("input")].forEach((cb,i)=>cb.checked=!state.hidden.has(i));
+  function renderFontList(){
+    chipWrap.innerHTML="";
+    FONTS.forEach(f=>{
+      const lab=document.createElement("label");
+      const cb=document.createElement("input"); cb.type="checkbox"; cb.checked=!state.hidden.has(f.name);
+      cb.addEventListener("change",()=>{ cb.checked?state.hidden.delete(f.name):state.hidden.add(f.name); build(); });
+      const span=document.createElement("span"); span.textContent=f.name;
+      lab.appendChild(cb); lab.appendChild(span);
+      if(f.custom){
+        const rm=document.createElement("button"); rm.type="button"; rm.className="rm"; rm.textContent="✕"; rm.title="Remove";
+        rm.addEventListener("click",ev=>{ ev.preventDefault(); removeFont(f.name); });
+        lab.appendChild(rm);
+      }
+      chipWrap.appendChild(lab);
+    });
   }
-  $("selall").addEventListener("click",()=>{ state.hidden.clear(); syncChips(); build(); });
-  $("selnone").addEventListener("click",()=>{ FONTS.forEach((_,i)=>state.hidden.add(i)); syncChips(); build(); });
+  $("selall").addEventListener("click",()=>{ state.hidden.clear(); renderFontList(); build(); });
+  $("selnone").addEventListener("click",()=>{ FONTS.forEach(f=>state.hidden.add(f.name)); renderFontList(); build(); });
+  $("addfont").addEventListener("click",()=>{ addFont($("newfont").value); $("newfont").value=""; $("newfont").focus(); });
+  $("newfont").addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); $("addfont").click(); } });
+
+  // restore saved custom fonts
+  loadCustom().forEach(name=>{
+    if(FONTS.some(f=>f.name.toLowerCase()===name.toLowerCase())) return;
+    loadFontCss(name);
+    FONTS.push({cls:'"'+name+'", serif', name:name, tag:"Custom", s:1.0, custom:true});
+  });
+  renderFontList();
 
   // controls
   $("tone").addEventListener("click",e=>{
@@ -340,7 +402,7 @@ Réia Diamonds
     });
     body.innerHTML="";
     FONTS.forEach((f,i)=>{
-      if(state.hidden.has(i))return;
+      if(state.hidden.has(f.name))return;
       const tr=document.createElement("tr");
       const rh=document.createElement("th");
       rh.className="rowhead";
@@ -386,9 +448,15 @@ Réia Diamonds
   }
   // populate the single-font picker
   const dlfont=$("dlfont");
-  FONTS.forEach((f,i)=>{
-    const o=document.createElement("option"); o.value=i; o.textContent=f.name; dlfont.appendChild(o);
-  });
+  function renderPicker(){
+    const cur=dlfont.value;
+    dlfont.innerHTML="";
+    FONTS.forEach((f,i)=>{
+      const o=document.createElement("option"); o.value=i; o.textContent=f.name; dlfont.appendChild(o);
+    });
+    if(cur && cur<FONTS.length) dlfont.value=cur;
+  }
+  renderPicker();
   $("dlone").addEventListener("click",()=>saveRow(+dlfont.value));
 
   // ---- downloads ----
